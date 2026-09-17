@@ -22,6 +22,10 @@ et ce projet adhère au [Versionnage Sémantique](https://semver.org/lang/fr/) (
 - Contrôle d'accès par rôle (Admin, Manager, Consultation) et cloisonnement des données par site assigné.
 - Écran de gestion des comptes utilisateurs (réservé aux administrateurs).
 - Journalisation des connexions et déconnexions.
+- Gestion complète des employés : fiche identité (coordonnées, photo), contrats (type, quotité, heures, taux horaire, historique des avenants/renouvellements), compétences/postes autorisés, indisponibilités récurrentes, archivage.
+- Écran de gestion des postes de travail par site (caisse, rayon, responsable...).
+- Import en masse d'employés depuis un fichier CSV ou Excel, avec validation des données avant import.
+- Recherche et filtres avancés sur la liste des employés (nom/prénom, site, poste, statut).
 
 ## [0.1.0] - 2026-09-17
 

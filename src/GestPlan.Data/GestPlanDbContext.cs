@@ -26,6 +26,10 @@ public class GestPlanDbContext(DbContextOptions<GestPlanDbContext> options) : Db
 
     public DbSet<EmployeSite> EmployesSites => Set<EmployeSite>();
 
+    public DbSet<EmployePoste> EmployesPostes => Set<EmployePoste>();
+
+    public DbSet<Indisponibilite> Indisponibilites => Set<Indisponibilite>();
+
     public DbSet<ReglesConformite> ReglesConformite => Set<ReglesConformite>();
 
     public DbSet<JournalAudit> JournauxAudit => Set<JournalAudit>();
@@ -106,6 +110,34 @@ public class GestPlanDbContext(DbContextOptions<GestPlanDbContext> options) : Db
                 .WithMany(p => p.Contrats)
                 .HasForeignKey(c => c.PosteId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entite.HasOne(c => c.ContratPrecedent)
+                .WithMany()
+                .HasForeignKey(c => c.ContratPrecedentId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<EmployePoste>(entite =>
+        {
+            entite.HasKey(ep => new { ep.EmployeId, ep.PosteId });
+
+            entite.HasOne(ep => ep.Employe)
+                .WithMany(e => e.PostesAutorises)
+                .HasForeignKey(ep => ep.EmployeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entite.HasOne(ep => ep.Poste)
+                .WithMany(p => p.EmployesAutorises)
+                .HasForeignKey(ep => ep.PosteId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Indisponibilite>(entite =>
+        {
+            entite.HasOne(i => i.Employe)
+                .WithMany(e => e.Indisponibilites)
+                .HasForeignKey(i => i.EmployeId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<JournalAudit>(entite =>

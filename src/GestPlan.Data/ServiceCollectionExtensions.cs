@@ -1,3 +1,4 @@
+using GestPlan.Data.Import;
 using GestPlan.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>();
         services.AddScoped<InitialiseurBaseDeDonnees>();
+        services.AddSingleton<IServiceImportEmployes, ServiceImportEmployes>();
 
         return services;
     }

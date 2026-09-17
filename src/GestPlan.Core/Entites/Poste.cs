@@ -14,4 +14,6 @@ public class Poste : EntiteBase
     public Site Site { get; set; } = null!;
 
     public ICollection<Contrat> Contrats { get; set; } = new List<Contrat>();
+
+    public ICollection<EmployePoste> EmployesAutorises { get; set; } = new List<EmployePoste>();
 }

@@ -9,6 +9,9 @@
          xmlns:viewModels="clr-namespace:GestPlan.App.ViewModels"
          mc:Ignorable="d"
          Title="{loc:Localisation Cle=Page.Sites.Titre}">
+    <Page.Resources>
+        <loc:ObjetNonNulVersVisibiliteConverter x:Key="ObjetNonNulVersVisibilite" />
+    </Page.Resources>
     <Grid Margin="24">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
@@ -26,6 +29,7 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
@@ -64,6 +68,12 @@
                                            Appearance="Primary" Margin="4,0"
                                            Command="{Binding DataContext.SelectionnerSiteGlobalCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                            CommandParameter="{Binding}" />
+
+                                <ui:Button Grid.Column="4"
+                                           Content="{loc:Localisation Cle=Page.Sites.GererPostes}"
+                                           Appearance="Secondary" Margin="4,0"
+                                           Command="{Binding DataContext.SelectionnerSitePourPostesCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding}" />
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -94,6 +104,41 @@
             <ui:Button Content="{loc:Localisation Cle=Page.Sites.Nouveau}"
                        Appearance="Secondary" HorizontalAlignment="Stretch" Margin="0,8,0,0"
                        Command="{Binding PreparerNouveauSiteCommand}" />
+
+            <Separator Margin="0,20" />
+
+            <StackPanel Visibility="{Binding SiteSelectionnePourPostes, Converter={StaticResource ObjetNonNulVersVisibilite}}">
+                <ui:TextBlock FontTypography="BodyStrong" Margin="0,0,0,12">
+                    <Run Text="{loc:Localisation Cle=Page.Sites.Postes}" />
+                    <Run Text=" — " />
+                    <Run Text="{Binding SiteSelectionnePourPostes.Nom, Mode=OneWay}" />
+                </ui:TextBlock>
+
+                <ListView ItemsSource="{Binding PostesDuSite}" MaxHeight="200" Margin="0,0,0,12">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ui:TextBlock Grid.Column="0" Text="{Binding Nom}" VerticalAlignment="Center" />
+                                <ui:Button Grid.Column="1" Content="{loc:Localisation Cle=Page.Sites.SupprimerPoste}"
+                                           Appearance="Danger"
+                                           Command="{Binding DataContext.SupprimerPosteCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <ui:TextBox Text="{Binding PosteEnCoursEdition.Nom, UpdateSourceTrigger=PropertyChanged}"
+                            PlaceholderText="{loc:Localisation Cle=Page.Sites.NomPoste}" Margin="0,0,0,8" />
+
+                <ui:Button Content="{loc:Localisation Cle=Page.Sites.AjouterPoste}"
+                           Appearance="Primary" HorizontalAlignment="Stretch"
+                           Command="{Binding AjouterPosteCommand}" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>

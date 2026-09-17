@@ -1,0 +1,64 @@
+<ui:FluentWindow x:Class="GestPlan.App.ImportEmployesWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:loc="clr-namespace:GestPlan.App.Services"
+                 xmlns:viewModels="clr-namespace:GestPlan.App.ViewModels"
+                 d:DataContext="{d:DesignInstance Type=viewModels:ImportEmployesViewModel}"
+                 mc:Ignorable="d"
+                 Title="{loc:Localisation Cle=Page.Employes.Import.Titre}"
+                 Icon="/Assets/logo.png"
+                 Height="520" Width="640"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <loc:ChaineVersVisibiliteConverter x:Key="ChaineVersVisibilite" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Title="GestPlan" Grid.Row="0" Icon="{ui:ImageIcon 'pack://application:,,,/Assets/logo.png'}" />
+
+        <StackPanel Grid.Row="1" Margin="24,16,24,8" Orientation="Horizontal">
+            <ui:Button Content="{loc:Localisation Cle=Page.Employes.Import.ChoisirFichier}"
+                       Appearance="Secondary" Click="ChoisirFichier_Click" />
+            <ui:TextBlock Text="{Binding CheminFichier}" Margin="12,0,0,0" VerticalAlignment="Center" Opacity="0.7" />
+        </StackPanel>
+
+        <ListView Grid.Row="2" Margin="24,0" ItemsSource="{Binding LignesAnalysees}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Ligne" DisplayMemberBinding="{Binding NumeroLigne}" Width="50" />
+                    <GridViewColumn Header="Nom" DisplayMemberBinding="{Binding Nom}" Width="100" />
+                    <GridViewColumn Header="Prénom" DisplayMemberBinding="{Binding Prenom}" Width="100" />
+                    <GridViewColumn Header="Site" DisplayMemberBinding="{Binding NomSitePrincipal}" Width="100" />
+                    <GridViewColumn Header="Erreurs" Width="220">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Erreurs, Converter={x:Static loc:ListeErreursConverter.Instance}}"
+                                           Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                                           TextWrapping="Wrap" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <StackPanel Grid.Row="3" Margin="24,8,24,16">
+            <ui:TextBlock Text="{Binding MessageResultat}" Margin="0,0,0,8"
+                          Visibility="{Binding MessageResultat, Converter={StaticResource ChaineVersVisibilite}}" />
+            <ui:Button Content="{loc:Localisation Cle=Page.Employes.Import.Lancer}"
+                       Appearance="Primary" HorizontalAlignment="Stretch"
+                       IsEnabled="{Binding AuMoinsUneLigneValide}"
+                       Command="{Binding ImporterCommand}" />
+        </StackPanel>
+    </Grid>
+</ui:FluentWindow>

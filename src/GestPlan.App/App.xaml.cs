@@ -54,6 +54,7 @@ public partial class App : Application
                 services.AddSingleton<IServiceLocalisation, ServiceLocalisation>();
                 services.AddSingleton<ISelecteurSiteService, SelecteurSiteService>();
                 services.AddSingleton<ISessionUtilisateurService, SessionUtilisateurService>();
+                services.AddSingleton<IServicePhotosEmployes, ServicePhotosEmployes>();
 
                 services.AddSingleton<IServiceHachageMotDePasse, ServiceHachageMotDePasse>();
                 services.AddSingleton(new PolitiqueMotDePasse());
@@ -66,6 +67,8 @@ public partial class App : Application
                 services.AddTransient<ConnexionViewModel>();
                 services.AddTransient<PremierCompteWindow>();
                 services.AddTransient<PremierCompteViewModel>();
+                services.AddTransient<ImportEmployesWindow>();
+                services.AddTransient<ImportEmployesViewModel>();
 
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<MainWindowViewModel>();

@@ -7,10 +7,293 @@
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
          xmlns:viewModels="clr-namespace:GestPlan.App.ViewModels"
+         xmlns:enumerations="clr-namespace:GestPlan.Core.Enumerations;assembly=GestPlan.Core"
+         xmlns:sys="clr-namespace:System;assembly=mscorlib"
          mc:Ignorable="d"
          Title="{loc:Localisation Cle=Page.Employes.Titre}">
-    <StackPanel Margin="24" VerticalAlignment="Center" HorizontalAlignment="Center">
-        <ui:TextBlock Text="{loc:Localisation Cle=Page.Employes.Titre}" FontTypography="TitleLarge" />
-        <ui:TextBlock Text="{loc:Localisation Cle=Page.Employes.Message}" Margin="0,12,0,0" Opacity="0.7" />
-    </StackPanel>
+    <Page.Resources>
+        <loc:ChaineVersVisibiliteConverter x:Key="ChaineVersVisibilite" />
+        <loc:ObjetNonNulVersVisibiliteConverter x:Key="ObjetNonNulVersVisibilite" />
+    </Page.Resources>
+
+    <Grid Margin="24">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.2*" />
+            <ColumnDefinition Width="24" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Colonne gauche : recherche, filtres, liste -->
+        <StackPanel Grid.Column="0">
+            <ui:TextBlock Text="{loc:Localisation Cle=Page.Employes.Titre}" FontTypography="TitleLarge" Margin="0,0,0,12" />
+
+            <ui:TextBox Text="{Binding TexteRecherche, UpdateSourceTrigger=PropertyChanged}"
+                        PlaceholderText="{loc:Localisation Cle=Page.Employes.Rechercher}" Margin="0,0,0,8" />
+
+            <ComboBox ItemsSource="{Binding SitesDisponibles}" SelectedItem="{Binding SiteSelectionne}"
+                      DisplayMemberPath="Nom" Margin="0,0,0,8" />
+
+            <ComboBox ItemsSource="{Binding PostesDisponibles}" SelectedItem="{Binding PosteSelectionne}"
+                      DisplayMemberPath="Nom" Margin="0,0,0,8" />
+
+            <ComboBox SelectedItem="{Binding StatutSelectionne}" Margin="0,0,0,12">
+                <ComboBox.ItemsSource>
+                    <x:Array Type="{x:Type viewModels:StatutFiltreItem}">
+                        <viewModels:StatutFiltreItem>Tous</viewModels:StatutFiltreItem>
+                        <viewModels:StatutFiltreItem>Actif</viewModels:StatutFiltreItem>
+                        <viewModels:StatutFiltreItem>Archive</viewModels:StatutFiltreItem>
+                    </x:Array>
+                </ComboBox.ItemsSource>
+            </ComboBox>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                <ui:Button Content="{loc:Localisation Cle=Page.Employes.Nouveau}"
+                           Appearance="Primary" Margin="0,0,8,0"
+                           Command="{Binding PreparerNouvelEmployeCommand}" />
+                <ui:Button Content="{loc:Localisation Cle=Page.Employes.Importer}"
+                           Appearance="Secondary" Click="Importer_Click" />
+            </StackPanel>
+
+            <ListView ItemsSource="{Binding Employes}" MaxHeight="480"
+                      SelectionChanged="ListeEmployes_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" Padding="8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <ui:TextBlock Text="{Binding Nom}" FontTypography="BodyStrong" />
+                                    <ui:TextBlock Text="{Binding Prenom}" Opacity="0.7" FontTypography="Caption" />
+                                </StackPanel>
+
+                                <ui:Button Grid.Column="1"
+                                           Appearance="Danger" Margin="4,0"
+                                           Command="{Binding DataContext.BasculerArchivageCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding}">
+                                    <ui:Button.Style>
+                                        <Style TargetType="ui:Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding EstArchive}" Value="False">
+                                                    <Setter Property="Content" Value="{loc:Localisation Cle=Page.Employes.Archiver}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding EstArchive}" Value="True">
+                                                    <Setter Property="Content" Value="{loc:Localisation Cle=Page.Employes.Reactiver}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ui:Button.Style>
+                                </ui:Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+
+        <!-- Colonne droite : fiche détaillée avec onglets -->
+        <TabControl Grid.Column="2" Visibility="{Binding EmployeSelectionne, Converter={StaticResource ObjetNonNulVersVisibilite}}">
+            <TabItem Header="{loc:Localisation Cle=Page.Employes.OngletIdentite}">
+                <StackPanel Margin="16">
+                    <ui:TextBox Text="{Binding EmployeSelectionne.Nom, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="{loc:Localisation Cle=Page.Employes.Nom}" Margin="0,0,0,8" />
+                    <ui:TextBox Text="{Binding EmployeSelectionne.Prenom, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="{loc:Localisation Cle=Page.Employes.Prenom}" Margin="0,0,0,8" />
+                    <DatePicker SelectedDate="{Binding EmployeSelectionne.DateNaissance}" Margin="0,0,0,8" />
+                    <ui:TextBox Text="{Binding EmployeSelectionne.Email, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="{loc:Localisation Cle=Page.Employes.Email}" Margin="0,0,0,8" />
+                    <ui:TextBox Text="{Binding EmployeSelectionne.Telephone, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="{loc:Localisation Cle=Page.Employes.Telephone}" Margin="0,0,0,8" />
+                    <ui:TextBox Text="{Binding EmployeSelectionne.Adresse, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="{loc:Localisation Cle=Page.Employes.Adresse}" Margin="0,0,0,8" />
+                    <ui:TextBox Text="{Binding EmployeSelectionne.CodePostal, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="{loc:Localisation Cle=Page.Employes.CodePostal}" Margin="0,0,0,8" />
+                    <ui:TextBox Text="{Binding EmployeSelectionne.Ville, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="{loc:Localisation Cle=Page.Employes.Ville}" Margin="0,0,0,8" />
+
+                    <ComboBox ItemsSource="{Binding SitesDisponibles}"
+                              SelectedValue="{Binding EmployeSelectionne.SitePrincipalId}"
+                              SelectedValuePath="Id" DisplayMemberPath="Nom" Margin="0,0,0,8" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <ui:TextBlock Text="{loc:Localisation Cle=Page.Employes.Photo}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <ui:Button Content="{loc:Localisation Cle=Page.Employes.ChoisirPhoto}" Appearance="Secondary" Click="ChoisirPhoto_Click" />
+                    </StackPanel>
+
+                    <ui:TextBlock Text="{Binding MessageErreur}"
+                                  Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                                  TextWrapping="Wrap" Margin="0,0,0,12"
+                                  Visibility="{Binding MessageErreur, Converter={StaticResource ChaineVersVisibilite}}" />
+
+                    <ui:Button Content="{loc:Localisation Cle=Page.Employes.Enregistrer}"
+                               Appearance="Primary" HorizontalAlignment="Left"
+                               Command="{Binding EnregistrerEmployeCommand}" />
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="{loc:Localisation Cle=Page.Employes.OngletContrats}">
+                <Grid Margin="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <ListView Grid.Row="0" ItemsSource="{Binding Contrats}" MaxHeight="300">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" Padding="8">
+                                    <StackPanel>
+                                        <ui:TextBlock Text="{Binding Type}" FontTypography="BodyStrong" />
+                                        <ui:TextBlock Opacity="0.7" FontTypography="Caption">
+                                            <Run Text="{Binding NomPoste, Mode=OneWay}" />
+                                            <Run Text=" - " />
+                                            <Run Text="{Binding NomSite, Mode=OneWay}" />
+                                        </ui:TextBlock>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                        <ui:TextBlock Text="{loc:Localisation Cle=Page.Employes.NouveauContrat}" FontTypography="BodyStrong" Margin="0,0,0,8" />
+
+                        <ComboBox ItemsSource="{Binding SitesDisponibles}"
+                                  SelectedValue="{Binding NouveauContrat.SiteId}"
+                                  SelectedValuePath="Id" DisplayMemberPath="Nom" Margin="0,0,0,8" />
+                        <ComboBox ItemsSource="{Binding PostesDisponibles}"
+                                  SelectedValue="{Binding NouveauContrat.PosteId}"
+                                  SelectedValuePath="Id" DisplayMemberPath="Nom" Margin="0,0,0,8" />
+
+                        <ComboBox SelectedItem="{Binding NouveauContrat.Type}" Margin="0,0,0,8">
+                            <ComboBox.ItemsSource>
+                                <x:Array Type="{x:Type enumerations:TypeContrat}">
+                                    <enumerations:TypeContrat>Cdi</enumerations:TypeContrat>
+                                    <enumerations:TypeContrat>Cdd</enumerations:TypeContrat>
+                                    <enumerations:TypeContrat>Apprentissage</enumerations:TypeContrat>
+                                </x:Array>
+                            </ComboBox.ItemsSource>
+                        </ComboBox>
+
+                        <ComboBox SelectedItem="{Binding NouveauContrat.Quotite}" Margin="0,0,0,8">
+                            <ComboBox.ItemsSource>
+                                <x:Array Type="{x:Type enumerations:QuotiteTravail}">
+                                    <enumerations:QuotiteTravail>TempsPlein</enumerations:QuotiteTravail>
+                                    <enumerations:QuotiteTravail>TempsPartiel</enumerations:QuotiteTravail>
+                                </x:Array>
+                            </ComboBox.ItemsSource>
+                        </ComboBox>
+
+                        <ui:NumberBox Value="{Binding NouveauContrat.HeuresHebdomadaires}"
+                                      PlaceholderText="{loc:Localisation Cle=Page.Employes.Contrat.HeuresHebdomadaires}" Margin="0,0,0,8" />
+                        <ui:NumberBox Value="{Binding NouveauContrat.TauxHoraireBrut}"
+                                      PlaceholderText="{loc:Localisation Cle=Page.Employes.Contrat.TauxHoraire}" Margin="0,0,0,8" />
+
+                        <DatePicker SelectedDate="{Binding NouveauContrat.DateDebut}" Margin="0,0,0,8" />
+                        <DatePicker SelectedDate="{Binding NouveauContrat.DateFin}" Margin="0,0,0,8" />
+
+                        <ui:Button Content="{loc:Localisation Cle=Page.Employes.NouveauContrat}"
+                                   Appearance="Primary" HorizontalAlignment="Left"
+                                   Command="{Binding AjouterContratCommand}" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="{loc:Localisation Cle=Page.Employes.OngletCompetences}">
+                <Grid Margin="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <ListView Grid.Row="0" ItemsSource="{Binding CompetencesEmploye}" MaxHeight="300">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <ui:TextBlock Grid.Column="0" Text="{Binding Nom}" VerticalAlignment="Center" />
+                                    <ui:Button Grid.Column="1" Content="{loc:Localisation Cle=Page.Employes.Supprimer}"
+                                               Appearance="Danger"
+                                               Command="{Binding DataContext.RetirerCompetenceCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                               CommandParameter="{Binding}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,12,0,0">
+                        <ComboBox ItemsSource="{Binding CompetencesDisponibles}" SelectedItem="{Binding CompetenceAAjouter}"
+                                  DisplayMemberPath="Nom" Width="220" Margin="0,0,8,0" />
+                        <ui:Button Content="{loc:Localisation Cle=Page.Employes.AjouterCompetence}"
+                                   Appearance="Primary" Command="{Binding AjouterCompetenceCommand}" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="{loc:Localisation Cle=Page.Employes.OngletDisponibilites}">
+                <Grid Margin="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <ListView Grid.Row="0" ItemsSource="{Binding Indisponibilites}" MaxHeight="300">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <ui:TextBlock Text="{Binding JourSemaine}" FontTypography="BodyStrong" />
+                                        <ui:TextBlock Opacity="0.7" FontTypography="Caption">
+                                            <Run Text="{Binding HeureDebut, Mode=OneWay}" />
+                                            <Run Text=" - " />
+                                            <Run Text="{Binding HeureFin, Mode=OneWay}" />
+                                        </ui:TextBlock>
+                                    </StackPanel>
+                                    <ui:Button Grid.Column="1" Content="{loc:Localisation Cle=Page.Employes.Supprimer}"
+                                               Appearance="Danger"
+                                               Command="{Binding DataContext.SupprimerIndisponibiliteCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                               CommandParameter="{Binding}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                        <ui:TextBlock Text="{loc:Localisation Cle=Page.Employes.AjouterIndisponibilite}" FontTypography="BodyStrong" Margin="0,0,0,8" />
+
+                        <ComboBox SelectedItem="{Binding NouvelleIndisponibilite.JourSemaine}" Margin="0,0,0,8">
+                            <ComboBox.ItemsSource>
+                                <x:Array Type="{x:Type sys:DayOfWeek}">
+                                    <sys:DayOfWeek>Monday</sys:DayOfWeek>
+                                    <sys:DayOfWeek>Tuesday</sys:DayOfWeek>
+                                    <sys:DayOfWeek>Wednesday</sys:DayOfWeek>
+                                    <sys:DayOfWeek>Thursday</sys:DayOfWeek>
+                                    <sys:DayOfWeek>Friday</sys:DayOfWeek>
+                                    <sys:DayOfWeek>Saturday</sys:DayOfWeek>
+                                    <sys:DayOfWeek>Sunday</sys:DayOfWeek>
+                                </x:Array>
+                            </ComboBox.ItemsSource>
+                        </ComboBox>
+
+                        <ui:TextBox Text="{Binding NouvelleIndisponibilite.Motif, UpdateSourceTrigger=PropertyChanged}"
+                                    PlaceholderText="{loc:Localisation Cle=Page.Employes.Indisponibilite.Motif}" Margin="0,0,0,8" />
+
+                        <ui:Button Content="{loc:Localisation Cle=Page.Employes.AjouterIndisponibilite}"
+                                   Appearance="Primary" HorizontalAlignment="Left"
+                                   Command="{Binding AjouterIndisponibiliteCommand}" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </Page>

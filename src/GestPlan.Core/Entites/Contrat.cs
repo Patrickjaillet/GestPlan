@@ -4,7 +4,9 @@ namespace GestPlan.Core.Entites;
 
 /// <summary>
 /// Un contrat de travail liant un employé à un site et un poste, sur une période donnée.
-/// L'historique des avenants/renouvellements est traité en Phase 4.
+/// Un avenant ou un renouvellement est représenté par un nouveau <see cref="Contrat"/>
+/// référençant le précédent via <see cref="ContratPrecedentId"/>, formant une chaîne
+/// d'historique complète pour l'employé.
 /// </summary>
 public class Contrat : EntiteBase
 {
@@ -31,4 +33,8 @@ public class Contrat : EntiteBase
     public DateOnly DateDebut { get; set; }
 
     public DateOnly? DateFin { get; set; }
+
+    public int? ContratPrecedentId { get; set; }
+
+    public Contrat? ContratPrecedent { get; set; }
 }

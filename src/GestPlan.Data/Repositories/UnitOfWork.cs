@@ -17,6 +17,8 @@ public class UnitOfWork : IUnitOfWork
         Employes = new Repository<Employe>(contexte);
         Postes = new Repository<Poste>(contexte);
         Contrats = new Repository<Contrat>(contexte);
+        EmployesPostes = new Repository<EmployePoste>(contexte);
+        Indisponibilites = new Repository<Indisponibilite>(contexte);
         ReglesConformite = new Repository<ReglesConformite>(contexte);
         JournauxAudit = new Repository<JournalAudit>(contexte);
     }
@@ -30,6 +32,10 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<Poste> Postes { get; }
 
     public IRepository<Contrat> Contrats { get; }
+
+    public IRepository<EmployePoste> EmployesPostes { get; }
+
+    public IRepository<Indisponibilite> Indisponibilites { get; }
 
     public IRepository<ReglesConformite> ReglesConformite { get; }
 

@@ -22,7 +22,15 @@ public partial class SitesViewModel : PageViewModelBase
     [ObservableProperty]
     private int? _idEnCoursEdition;
 
+    [ObservableProperty]
+    private SiteEditableViewModel? _siteSelectionnePourPostes;
+
+    [ObservableProperty]
+    private PosteEditableViewModel _posteEnCoursEdition = new();
+
     public ObservableCollection<SiteEditableViewModel> Sites { get; } = [];
+
+    public ObservableCollection<PosteEditableViewModel> PostesDuSite { get; } = [];
 
     public SitesViewModel(IUnitOfWorkFactory unitOfWorkFactory, ISelecteurSiteService selecteurSite)
     {
@@ -119,4 +127,65 @@ public partial class SitesViewModel : PageViewModelBase
     [RelayCommand]
     private void SelectionnerSiteGlobal(SiteEditableViewModel site) =>
         _selecteurSite.SelectionnerSite(site.Id);
+
+    [RelayCommand]
+    private async Task SelectionnerSitePourPostesAsync(SiteEditableViewModel site)
+    {
+        SiteSelectionnePourPostes = site;
+        PosteEnCoursEdition = new PosteEditableViewModel();
+        await ChargerPostesAsync(site.Id);
+    }
+
+    private async Task ChargerPostesAsync(int siteId)
+    {
+        using var unitOfWork = _unitOfWorkFactory.Creer();
+
+        var postes = await unitOfWork.Postes.ObtenirTousAsync();
+
+        PostesDuSite.Clear();
+        foreach (var poste in postes.Where(p => p.SiteId == siteId).OrderBy(p => p.Nom))
+        {
+            PostesDuSite.Add(new PosteEditableViewModel(poste));
+        }
+    }
+
+    [RelayCommand]
+    private async Task AjouterPosteAsync()
+    {
+        if (SiteSelectionnePourPostes is null || string.IsNullOrWhiteSpace(PosteEnCoursEdition.Nom))
+        {
+            return;
+        }
+
+        using var unitOfWork = _unitOfWorkFactory.Creer();
+
+        var nouveauPoste = new Poste { Nom = PosteEnCoursEdition.Nom, SiteId = SiteSelectionnePourPostes.Id };
+        PosteEnCoursEdition.AppliquerA(nouveauPoste);
+
+        await unitOfWork.Postes.AjouterAsync(nouveauPoste);
+        await unitOfWork.EnregistrerAsync();
+
+        await ChargerPostesAsync(SiteSelectionnePourPostes.Id);
+        PosteEnCoursEdition = new PosteEditableViewModel();
+    }
+
+    [RelayCommand]
+    private async Task SupprimerPosteAsync(PosteEditableViewModel poste)
+    {
+        if (SiteSelectionnePourPostes is null)
+        {
+            return;
+        }
+
+        using var unitOfWork = _unitOfWorkFactory.Creer();
+
+        var entite = await unitOfWork.Postes.ObtenirParIdAsync(poste.Id);
+        if (entite is not null)
+        {
+            unitOfWork.Postes.Supprimer(entite);
+            await unitOfWork.EnregistrerAsync();
+        }
+
+        await ChargerPostesAsync(SiteSelectionnePourPostes.Id);
+    }
 }

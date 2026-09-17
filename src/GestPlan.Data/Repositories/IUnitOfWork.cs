@@ -18,6 +18,10 @@ public interface IUnitOfWork : IDisposable
 
     IRepository<Contrat> Contrats { get; }
 
+    IRepository<EmployePoste> EmployesPostes { get; }
+
+    IRepository<Indisponibilite> Indisponibilites { get; }
+
     IRepository<ReglesConformite> ReglesConformite { get; }
 
     IRepository<JournalAudit> JournauxAudit { get; }
