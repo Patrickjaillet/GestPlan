@@ -14,8 +14,10 @@ et ce projet adhère au [Versionnage Sémantique](https://semver.org/lang/fr/) (
 - Contexte de base de données EF Core (SQLite) avec journalisation d'audit automatique (qui, quoi, quand, avant/après) sur toute création, modification ou suppression.
 - Première migration de base de données et mécanisme de mise à jour automatique et transparente au démarrage, précédé d'une sauvegarde horodatée du fichier de base existant.
 - Pattern Repository et Unit of Work pour l'accès aux données.
-- Fenêtre principale avec navigation (Planning, Employés, Congés, Rapports, Paramètres, À propos) et thème clair/sombre suivant automatiquement le thème Windows.
+- Fenêtre principale avec navigation (Planning, Employés, Congés, Rapports, Sites, Paramètres, À propos) et thème clair/sombre suivant automatiquement le thème Windows.
 - Mécanisme minimal de chargement des chaînes d'interface depuis les ressources d'internationalisation.
+- Gestion multi-site : extension du modèle `Site` (adresse, horaires d'ouverture, fuseau horaire), sélecteur de site global persisté entre sessions, rattachement des employés à un site principal et à des sites secondaires, paramètres de conformité par site.
+- Écran de gestion des sites (création, modification, désactivation/réactivation).
 
 ## [0.1.0] - 2026-09-17
 

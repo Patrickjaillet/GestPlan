@@ -24,6 +24,10 @@ public class GestPlanDbContext(DbContextOptions<GestPlanDbContext> options) : Db
 
     public DbSet<Contrat> Contrats => Set<Contrat>();
 
+    public DbSet<EmployeSite> EmployesSites => Set<EmployeSite>();
+
+    public DbSet<ReglesConformite> ReglesConformite => Set<ReglesConformite>();
+
     public DbSet<JournalAudit> JournauxAudit => Set<JournalAudit>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -56,6 +60,31 @@ public class GestPlanDbContext(DbContextOptions<GestPlanDbContext> options) : Db
                 .WithMany(s => s.Employes)
                 .HasForeignKey(e => e.SitePrincipalId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<EmployeSite>(entite =>
+        {
+            entite.HasKey(es => new { es.EmployeId, es.SiteId });
+
+            entite.HasOne(es => es.Employe)
+                .WithMany(e => e.SitesSecondaires)
+                .HasForeignKey(es => es.EmployeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entite.HasOne(es => es.Site)
+                .WithMany(s => s.SitesSecondaires)
+                .HasForeignKey(es => es.SiteId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<ReglesConformite>(entite =>
+        {
+            entite.HasIndex(r => r.SiteId).IsUnique();
+
+            entite.HasOne(r => r.Site)
+                .WithOne(s => s.ReglesConformite)
+                .HasForeignKey<ReglesConformite>(r => r.SiteId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Contrat>(entite =>

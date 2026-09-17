@@ -16,6 +16,7 @@ public static class ServiceCollectionExtensions
             options.UseSqlite(CheminsBaseDeDonnees.ChaineConnexion));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>();
         services.AddScoped<InitialiseurBaseDeDonnees>();
 
         return services;

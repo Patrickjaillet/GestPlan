@@ -6,7 +6,7 @@ namespace GestPlan.Data.Repositories;
 /// Regroupe les repositories du domaine et coordonne la persistance des changements
 /// dans une unique transaction implicite via <see cref="GestPlanDbContext.SaveChangesAsync"/>.
 /// </summary>
-public interface IUnitOfWork
+public interface IUnitOfWork : IDisposable
 {
     IRepository<Site> Sites { get; }
 
@@ -17,6 +17,8 @@ public interface IUnitOfWork
     IRepository<Poste> Postes { get; }
 
     IRepository<Contrat> Contrats { get; }
+
+    IRepository<ReglesConformite> ReglesConformite { get; }
 
     Task<int> EnregistrerAsync(CancellationToken cancellationToken = default);
 }

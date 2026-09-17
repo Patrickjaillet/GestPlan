@@ -35,6 +35,9 @@
                 <ui:NavigationViewItem Content="{loc:Localisation Cle=Navigation.Rapports}"
                                         TargetPageType="{x:Type views:RapportsPage}"
                                         Icon="{ui:SymbolIcon DocumentData24}" />
+                <ui:NavigationViewItem Content="{loc:Localisation Cle=Navigation.Sites}"
+                                        TargetPageType="{x:Type views:SitesPage}"
+                                        Icon="{ui:SymbolIcon Building24}" />
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
                 <ui:NavigationViewItem Content="{loc:Localisation Cle=Navigation.Parametres}"

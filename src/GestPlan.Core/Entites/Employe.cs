@@ -20,5 +20,7 @@ public class Employe : EntiteBase
 
     public Site SitePrincipal { get; set; } = null!;
 
+    public ICollection<EmployeSite> SitesSecondaires { get; set; } = new List<EmployeSite>();
+
     public ICollection<Contrat> Contrats { get; set; } = new List<Contrat>();
 }

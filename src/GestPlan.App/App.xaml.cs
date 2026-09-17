@@ -48,6 +48,7 @@ public partial class App : Application
                 services.AjouterGestPlanData();
 
                 services.AddSingleton<IServiceLocalisation, ServiceLocalisation>();
+                services.AddSingleton<ISelecteurSiteService, SelecteurSiteService>();
 
                 services.AddNavigationViewPageProvider();
                 services.AddSingleton<INavigationService, NavigationService>();
@@ -65,6 +66,8 @@ public partial class App : Application
                 services.AddTransient<RapportsViewModel>();
                 services.AddTransient<ParametresPage>();
                 services.AddTransient<ParametresViewModel>();
+                services.AddTransient<SitesPage>();
+                services.AddTransient<SitesViewModel>();
                 services.AddTransient<AProposPage>();
                 services.AddTransient<AProposViewModel>();
             })
