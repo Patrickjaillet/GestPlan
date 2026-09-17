@@ -4,17 +4,46 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:loc="clr-namespace:GestPlan.App.Services"
+                 xmlns:views="clr-namespace:GestPlan.App.Views.Pages"
                  mc:Ignorable="d"
                  Title="GestPlan"
-                 Icon="Assets/app.ico"
+                 Icon="/Assets/logo.png"
                  Height="720" Width="1200"
+                 MinHeight="480" MinWidth="720"
                  ExtendsContentIntoTitleBar="True"
                  WindowStartupLocation="CenterScreen">
     <Grid>
-        <ui:TitleBar Title="GestPlan" Icon="Assets/app.ico" VerticalAlignment="Top" />
-        <TextBlock Text="GestPlan — Cadrage et outillage (Phase 0)"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="20" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Title="GestPlan" Grid.Row="0" Icon="{ui:ImageIcon 'pack://application:,,,/Assets/logo.png'}" />
+
+        <ui:NavigationView x:Name="NavigationVuePrincipale" Grid.Row="1">
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem Content="{loc:Localisation Cle=Navigation.Planning}"
+                                        TargetPageType="{x:Type views:PlanningPage}"
+                                        Icon="{ui:SymbolIcon CalendarLtr24}" />
+                <ui:NavigationViewItem Content="{loc:Localisation Cle=Navigation.Employes}"
+                                        TargetPageType="{x:Type views:EmployesPage}"
+                                        Icon="{ui:SymbolIcon People24}" />
+                <ui:NavigationViewItem Content="{loc:Localisation Cle=Navigation.Conges}"
+                                        TargetPageType="{x:Type views:CongesPage}"
+                                        Icon="{ui:SymbolIcon Umbrella24}" />
+                <ui:NavigationViewItem Content="{loc:Localisation Cle=Navigation.Rapports}"
+                                        TargetPageType="{x:Type views:RapportsPage}"
+                                        Icon="{ui:SymbolIcon DocumentData24}" />
+            </ui:NavigationView.MenuItems>
+            <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem Content="{loc:Localisation Cle=Navigation.Parametres}"
+                                        TargetPageType="{x:Type views:ParametresPage}"
+                                        Icon="{ui:SymbolIcon Settings24}" />
+                <ui:NavigationViewItem Content="{loc:Localisation Cle=Navigation.APropos}"
+                                        TargetPageType="{x:Type views:AProposPage}"
+                                        Icon="{ui:SymbolIcon Info24}" />
+            </ui:NavigationView.FooterMenuItems>
+        </ui:NavigationView>
     </Grid>
 </ui:FluentWindow>

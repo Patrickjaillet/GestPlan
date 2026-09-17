@@ -5,6 +5,7 @@
 - Windows 10/11
 - [SDK .NET 10 (LTS)](https://dotnet.microsoft.com/download/dotnet/10.0)
 - Git
+- Outil global `dotnet-ef` (uniquement pour créer de nouvelles migrations) : `dotnet tool install --global dotnet-ef`
 
 ## Structure de la solution
 
@@ -41,6 +42,16 @@ dotnet run --project src/GestPlan.App/GestPlan.App.csproj
 ```powershell
 dotnet test GestPlan.sln
 ```
+
+## Migrations de base de données
+
+```powershell
+dotnet ef migrations add <NomMigration> --project src/GestPlan.Data --startup-project src/GestPlan.Data --output-dir Migrations
+```
+
+Les migrations sont appliquées automatiquement au démarrage de l'application
+(voir `InitialiseurBaseDeDonnees` dans `GestPlan.Data`), après sauvegarde
+horodatée du fichier de base existant dans `%LOCALAPPDATA%\GestPlan\Sauvegardes`.
 
 ## Génération de l'installeur
 

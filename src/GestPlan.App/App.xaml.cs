@@ -1,9 +1,15 @@
 using System.IO;
 using System.Windows;
+using GestPlan.App.Services;
+using GestPlan.App.ViewModels;
+using GestPlan.App.Views.Pages;
+using GestPlan.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using Wpf.Ui;
+using Wpf.Ui.DependencyInjection;
 
 namespace GestPlan.App;
 
@@ -13,6 +19,8 @@ namespace GestPlan.App;
 public partial class App : Application
 {
     private readonly IHost _host;
+
+    public static IServiceProvider Services { get; private set; } = null!;
 
     public App()
     {
@@ -37,9 +45,32 @@ public partial class App : Application
             .UseSerilog()
             .ConfigureServices((_, services) =>
             {
+                services.AjouterGestPlanData();
+
+                services.AddSingleton<IServiceLocalisation, ServiceLocalisation>();
+
+                services.AddNavigationViewPageProvider();
+                services.AddSingleton<INavigationService, NavigationService>();
+
                 services.AddSingleton<MainWindow>();
+                services.AddSingleton<MainWindowViewModel>();
+
+                services.AddTransient<PlanningPage>();
+                services.AddTransient<PlanningViewModel>();
+                services.AddTransient<EmployesPage>();
+                services.AddTransient<EmployesViewModel>();
+                services.AddTransient<CongesPage>();
+                services.AddTransient<CongesViewModel>();
+                services.AddTransient<RapportsPage>();
+                services.AddTransient<RapportsViewModel>();
+                services.AddTransient<ParametresPage>();
+                services.AddTransient<ParametresViewModel>();
+                services.AddTransient<AProposPage>();
+                services.AddTransient<AProposViewModel>();
             })
             .Build();
+
+        Services = _host.Services;
     }
 
     protected override async void OnStartup(StartupEventArgs e)
@@ -49,6 +80,12 @@ public partial class App : Application
         await _host.StartAsync();
 
         Log.Information("Démarrage de GestPlan");
+
+        using (var portee = _host.Services.CreateScope())
+        {
+            var initialiseur = portee.ServiceProvider.GetRequiredService<InitialiseurBaseDeDonnees>();
+            await initialiseur.InitialiserAsync();
+        }
 
         var mainWindow = _host.Services.GetRequiredService<MainWindow>();
         mainWindow.Show();

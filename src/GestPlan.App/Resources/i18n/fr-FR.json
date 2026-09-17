@@ -1,4 +1,25 @@
 {
   "Application.Titre": "GestPlan",
-  "Application.SousTitre": "Planification des employés"
+  "Application.SousTitre": "Planification des employés",
+  "Navigation.Planning": "Planning",
+  "Navigation.Employes": "Employés",
+  "Navigation.Conges": "Congés",
+  "Navigation.Rapports": "Rapports",
+  "Navigation.Parametres": "Paramètres",
+  "Navigation.APropos": "À propos",
+  "Page.Planning.Titre": "Planning",
+  "Page.Planning.Message": "Le planning visuel sera implémenté en Phase 5.",
+  "Page.Employes.Titre": "Employés",
+  "Page.Employes.Message": "La gestion des employés et contrats sera implémentée en Phase 4.",
+  "Page.Conges.Titre": "Congés",
+  "Page.Conges.Message": "La gestion des congés et absences sera implémentée en Phase 6.",
+  "Page.Rapports.Titre": "Rapports",
+  "Page.Rapports.Message": "Les rapports et exports seront implémentés en Phase 9.",
+  "Page.Parametres.Titre": "Paramètres",
+  "Page.Parametres.Message": "Les paramètres de l'application seront implémentés au fil des phases.",
+  "Page.APropos.Titre": "À propos",
+  "Page.APropos.NomLogiciel": "GestPlan",
+  "Page.APropos.Copyright": "Copyright © 2026 Sandefjord — Tous droits réservés",
+  "Page.APropos.Email": "sandefjord.development@proton.me",
+  "Page.APropos.SiteWeb": "https://patrickjaillet.github.io/GestPlan"
 }
