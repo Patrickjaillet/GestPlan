@@ -6,11 +6,12 @@
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  mc:Ignorable="d"
                  Title="GestPlan"
+                 Icon="Assets/app.ico"
                  Height="720" Width="1200"
                  ExtendsContentIntoTitleBar="True"
                  WindowStartupLocation="CenterScreen">
     <Grid>
-        <ui:TitleBar Title="GestPlan" VerticalAlignment="Top" />
+        <ui:TitleBar Title="GestPlan" Icon="Assets/app.ico" VerticalAlignment="Top" />
         <TextBlock Text="GestPlan — Cadrage et outillage (Phase 0)"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"

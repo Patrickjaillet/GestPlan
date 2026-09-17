@@ -20,6 +20,7 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>GestPlan</AssemblyName>
     <RootNamespace>GestPlan.App</RootNamespace>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

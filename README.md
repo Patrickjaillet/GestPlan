@@ -1,5 +1,9 @@
 # GestPlan
 
+<p align="center">
+  <img src="src/GestPlan.App/Assets/logo.png" alt="Logo GestPlan" width="128" height="128" />
+</p>
+
 Logiciel de planification des employés pour supérette (PME).
 
 **Copyright © 2026 Sandefjord — Tous droits réservés**

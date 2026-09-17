@@ -7,6 +7,10 @@ et ce projet adhère au [Versionnage Sémantique](https://semver.org/lang/fr/) (
 
 ## [Non publié]
 
+### Ajouté
+
+- Logo et icône de l'application (`Assets/logo.svg`, `Assets/logo.png`, `Assets/app.ico`), intégrés à l'exécutable et à la fenêtre principale.
+
 ## [0.1.0] - 2026-09-17
 
 ### Ajouté
