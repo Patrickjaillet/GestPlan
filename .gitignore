@@ -1,0 +1,67 @@
+# Fichiers internes de suivi de projet (non publics)
+ROADMAP.md
+CLAUDE.md
+MEMOIRE.md
+PROMPT.md
+
+# Build results
+bin/
+obj/
+out/
+publish/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Rider / ReSharper
+.idea/
+*.DotSettings.user
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Base de données locale
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Sauvegardes automatiques de la base
+*.db.bak
+Backups/
+
+# Logs
+logs/
+*.log
+
+# Résultats de tests
+TestResults/
+coverage/
+*.coverage
+*.trx
+
+# Packages NuGet
+*.nupkg
+packages/
+.nuget/
+
+# Fichiers temporaires OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Certificats et secrets
+*.pfx
+*.snk
+appsettings.*.local.json
+secrets.json
