@@ -18,6 +18,10 @@ et ce projet adhère au [Versionnage Sémantique](https://semver.org/lang/fr/) (
 - Mécanisme minimal de chargement des chaînes d'interface depuis les ressources d'internationalisation.
 - Gestion multi-site : extension du modèle `Site` (adresse, horaires d'ouverture, fuseau horaire), sélecteur de site global persisté entre sessions, rattachement des employés à un site principal et à des sites secondaires, paramètres de conformité par site.
 - Écran de gestion des sites (création, modification, désactivation/réactivation).
+- Authentification : écran de connexion au démarrage, création guidée du premier compte administrateur, hachage sécurisé des mots de passe (BCrypt), politique de mot de passe (longueur, complexité), verrouillage temporaire après plusieurs échecs, déconnexion automatique après inactivité.
+- Contrôle d'accès par rôle (Admin, Manager, Consultation) et cloisonnement des données par site assigné.
+- Écran de gestion des comptes utilisateurs (réservé aux administrateurs).
+- Journalisation des connexions et déconnexions.
 
 ## [0.1.0] - 2026-09-17
 

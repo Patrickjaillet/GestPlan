@@ -3,8 +3,7 @@ using GestPlan.Core.Enumerations;
 namespace GestPlan.Core.Entites;
 
 /// <summary>
-/// Compte permettant de se connecter à l'application. L'authentification
-/// (hachage des mots de passe, politique de sécurité) est mise en place en Phase 3.
+/// Compte permettant de se connecter à l'application.
 /// </summary>
 public class Utilisateur : EntiteBase
 {
@@ -12,9 +11,17 @@ public class Utilisateur : EntiteBase
 
     public required string HashMotDePasse { get; set; }
 
+    public DateTime DateDernierChangementMotDePasse { get; set; } = DateTime.UtcNow;
+
     public RoleUtilisateur Role { get; set; } = RoleUtilisateur.Consultation;
 
     public bool EstActif { get; set; } = true;
+
+    public DateTime? DerniereConnexion { get; set; }
+
+    public int TentativesEchoueesConsecutives { get; set; }
+
+    public DateTime? VerrouilleJusqua { get; set; }
 
     public int? SiteAssigneId { get; set; }
 

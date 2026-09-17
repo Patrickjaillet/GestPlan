@@ -1,0 +1,49 @@
+<ui:FluentWindow x:Class="GestPlan.App.ConnexionWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:loc="clr-namespace:GestPlan.App.Services"
+                 xmlns:viewModels="clr-namespace:GestPlan.App.ViewModels"
+                 d:DataContext="{d:DesignInstance Type=viewModels:ConnexionViewModel}"
+                 mc:Ignorable="d"
+                 Title="{loc:Localisation Cle=Connexion.Titre}"
+                 Icon="/Assets/logo.png"
+                 Height="420" Width="380"
+                 ResizeMode="NoResize"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <loc:ChaineVersVisibiliteConverter x:Key="ChaineVersVisibilite" />
+        <loc:BooleenInverseConverter x:Key="BooleenInverse" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Title="GestPlan" Grid.Row="0" Icon="{ui:ImageIcon 'pack://application:,,,/Assets/logo.png'}" />
+
+        <StackPanel Grid.Row="1" Margin="32" VerticalAlignment="Center">
+            <ui:TextBlock Text="{loc:Localisation Cle=Connexion.Titre}" FontTypography="TitleLarge" Margin="0,0,0,24" HorizontalAlignment="Center" />
+
+            <ui:TextBox Text="{Binding NomUtilisateur, UpdateSourceTrigger=PropertyChanged}"
+                        PlaceholderText="{loc:Localisation Cle=Connexion.NomUtilisateur}" Margin="0,0,0,12" />
+
+            <ui:PasswordBox Password="{Binding MotDePasse, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             PlaceholderText="{loc:Localisation Cle=Connexion.MotDePasse}" Margin="0,0,0,12" />
+
+            <ui:TextBlock Text="{Binding MessageErreur}"
+                          Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                          TextWrapping="Wrap" Margin="0,0,0,12"
+                          Visibility="{Binding MessageErreur, Converter={StaticResource ChaineVersVisibilite}}" />
+
+            <ui:Button Content="{loc:Localisation Cle=Connexion.SeConnecter}"
+                       Appearance="Primary" HorizontalAlignment="Stretch"
+                       IsEnabled="{Binding ConnexionEnCours, Converter={StaticResource BooleenInverse}}"
+                       Command="{Binding SeConnecterCommand}" />
+        </StackPanel>
+    </Grid>
+</ui:FluentWindow>

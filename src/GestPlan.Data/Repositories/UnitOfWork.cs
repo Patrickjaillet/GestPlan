@@ -18,6 +18,7 @@ public class UnitOfWork : IUnitOfWork
         Postes = new Repository<Poste>(contexte);
         Contrats = new Repository<Contrat>(contexte);
         ReglesConformite = new Repository<ReglesConformite>(contexte);
+        JournauxAudit = new Repository<JournalAudit>(contexte);
     }
 
     public IRepository<Site> Sites { get; }
@@ -31,6 +32,8 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<Contrat> Contrats { get; }
 
     public IRepository<ReglesConformite> ReglesConformite { get; }
+
+    public IRepository<JournalAudit> JournauxAudit { get; }
 
     public Task<int> EnregistrerAsync(CancellationToken cancellationToken = default) =>
         _contexte.SaveChangesAsync(cancellationToken);

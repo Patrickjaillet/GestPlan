@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
 namespace GestPlan.Data.Repositories;
@@ -12,6 +13,9 @@ public class Repository<TEntite>(GestPlanDbContext contexte) : IRepository<TEnti
 
     public async Task<TEntite?> ObtenirParIdAsync(int id, CancellationToken cancellationToken = default) =>
         await _ensemble.FindAsync([id], cancellationToken);
+
+    public async Task<TEntite?> ObtenirUnAsync(Expression<Func<TEntite, bool>> predicat, CancellationToken cancellationToken = default) =>
+        await _ensemble.SingleOrDefaultAsync(predicat, cancellationToken);
 
     public async Task<IReadOnlyList<TEntite>> ObtenirTousAsync(CancellationToken cancellationToken = default) =>
         await _ensemble.ToListAsync(cancellationToken);

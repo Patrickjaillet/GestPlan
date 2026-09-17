@@ -1,0 +1,132 @@
+<Page x:Class="GestPlan.App.Views.Pages.UtilisateursPage"
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+         xmlns:loc="clr-namespace:GestPlan.App.Services"
+         d:DataContext="{d:DesignInstance Type=viewModels:UtilisateursViewModel}"
+         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+         xmlns:viewModels="clr-namespace:GestPlan.App.ViewModels"
+         xmlns:enumerations="clr-namespace:GestPlan.Core.Enumerations;assembly=GestPlan.Core"
+         mc:Ignorable="d"
+         Title="{loc:Localisation Cle=Page.Utilisateurs.Titre}">
+    <Page.Resources>
+        <loc:ChaineVersVisibiliteConverter x:Key="ChaineVersVisibilite" />
+    </Page.Resources>
+
+    <Grid>
+        <TextBlock Text="{loc:Localisation Cle=Page.Utilisateurs.AccesRefuse}"
+                   HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding AccesAutorise}" Value="False">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <Grid Margin="24">
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding AccesAutorise}" Value="True">
+                        <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="24" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0">
+            <ui:TextBlock Text="{loc:Localisation Cle=Page.Utilisateurs.Titre}" FontTypography="TitleLarge" Margin="0,0,0,12" />
+
+            <ListView ItemsSource="{Binding Utilisateurs}" MaxHeight="500">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" Padding="8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <ui:TextBlock Text="{Binding NomUtilisateur}" FontTypography="BodyStrong" />
+                                    <ui:TextBlock Text="{Binding Role}" Opacity="0.7" FontTypography="Caption" />
+                                </StackPanel>
+
+                                <ui:Button Grid.Column="1" Content="{loc:Localisation Cle=Page.Utilisateurs.Modifier}"
+                                           Appearance="Secondary" Margin="4,0"
+                                           Command="{Binding DataContext.ModifierUtilisateurCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding}" />
+
+                                <ui:Button Grid.Column="2"
+                                           Appearance="Danger" Margin="4,0"
+                                           Command="{Binding DataContext.BasculerActivationCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding}">
+                                    <ui:Button.Style>
+                                        <Style TargetType="ui:Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding EstActif}" Value="True">
+                                                    <Setter Property="Content" Value="{loc:Localisation Cle=Page.Utilisateurs.Desactiver}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding EstActif}" Value="False">
+                                                    <Setter Property="Content" Value="{loc:Localisation Cle=Page.Utilisateurs.Reactiver}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ui:Button.Style>
+                                </ui:Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2">
+            <ui:TextBlock Text="{loc:Localisation Cle=Page.Utilisateurs.Nouveau}" FontTypography="BodyStrong" Margin="0,0,0,12" />
+
+            <ui:TextBox Text="{Binding UtilisateurEnCoursEdition.NomUtilisateur, UpdateSourceTrigger=PropertyChanged}"
+                        PlaceholderText="{loc:Localisation Cle=Page.Utilisateurs.NomUtilisateur}" Margin="0,0,0,8" />
+            <ui:PasswordBox Password="{Binding UtilisateurEnCoursEdition.NouveauMotDePasse, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             PlaceholderText="{loc:Localisation Cle=Page.Utilisateurs.MotDePasse}" Margin="0,0,0,8" />
+
+            <ComboBox SelectedItem="{Binding UtilisateurEnCoursEdition.Role}" Margin="0,0,0,8">
+                <ComboBox.ItemsSource>
+                    <x:Array Type="{x:Type enumerations:RoleUtilisateur}">
+                        <enumerations:RoleUtilisateur>Admin</enumerations:RoleUtilisateur>
+                        <enumerations:RoleUtilisateur>Manager</enumerations:RoleUtilisateur>
+                        <enumerations:RoleUtilisateur>Consultation</enumerations:RoleUtilisateur>
+                    </x:Array>
+                </ComboBox.ItemsSource>
+            </ComboBox>
+
+            <CheckBox Content="{loc:Localisation Cle=Page.Utilisateurs.StatutActif}"
+                      IsChecked="{Binding UtilisateurEnCoursEdition.EstActif}" Margin="0,0,0,12" />
+
+            <ui:TextBlock Text="{Binding MessageErreur}"
+                          Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                          TextWrapping="Wrap" Margin="0,0,0,12"
+                          Visibility="{Binding MessageErreur, Converter={StaticResource ChaineVersVisibilite}}" />
+
+            <ui:Button Content="{loc:Localisation Cle=Page.Utilisateurs.Enregistrer}"
+                       Appearance="Primary" HorizontalAlignment="Stretch"
+                       Command="{Binding EnregistrerCommand}" />
+            <ui:Button Content="{loc:Localisation Cle=Page.Utilisateurs.Nouveau}"
+                       Appearance="Secondary" HorizontalAlignment="Stretch" Margin="0,8,0,0"
+                       Command="{Binding PreparerNouvelUtilisateurCommand}" />
+        </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

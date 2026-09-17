@@ -40,6 +40,10 @@
                                         Icon="{ui:SymbolIcon Building24}" />
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem x:Name="ElementUtilisateurs"
+                                        Content="{loc:Localisation Cle=Navigation.Utilisateurs}"
+                                        TargetPageType="{x:Type views:UtilisateursPage}"
+                                        Icon="{ui:SymbolIcon Person24}" />
                 <ui:NavigationViewItem Content="{loc:Localisation Cle=Navigation.Parametres}"
                                         TargetPageType="{x:Type views:ParametresPage}"
                                         Icon="{ui:SymbolIcon Settings24}" />

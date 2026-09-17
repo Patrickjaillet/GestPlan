@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 namespace GestPlan.Data.Repositories;
 
 /// <summary>
@@ -6,6 +8,8 @@ namespace GestPlan.Data.Repositories;
 public interface IRepository<TEntite> where TEntite : class
 {
     Task<TEntite?> ObtenirParIdAsync(int id, CancellationToken cancellationToken = default);
+
+    Task<TEntite?> ObtenirUnAsync(Expression<Func<TEntite, bool>> predicat, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<TEntite>> ObtenirTousAsync(CancellationToken cancellationToken = default);
 

@@ -20,5 +20,7 @@ public interface IUnitOfWork : IDisposable
 
     IRepository<ReglesConformite> ReglesConformite { get; }
 
+    IRepository<JournalAudit> JournauxAudit { get; }
+
     Task<int> EnregistrerAsync(CancellationToken cancellationToken = default);
 }
