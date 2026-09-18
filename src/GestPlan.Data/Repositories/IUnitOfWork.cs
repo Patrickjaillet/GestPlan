@@ -22,6 +22,8 @@ public interface IUnitOfWork : IDisposable
 
     IRepository<Indisponibilite> Indisponibilites { get; }
 
+    IRepository<CreneauPlanning> CreneauxPlanning { get; }
+
     IRepository<ReglesConformite> ReglesConformite { get; }
 
     IRepository<JournalAudit> JournauxAudit { get; }

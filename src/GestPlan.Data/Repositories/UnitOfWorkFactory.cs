@@ -28,6 +28,8 @@ public class UnitOfWorkFactory(IServiceScopeFactory scopeFactory) : IUnitOfWorkF
 
         public IRepository<Core.Entites.Indisponibilite> Indisponibilites => interieur.Indisponibilites;
 
+        public IRepository<Core.Entites.CreneauPlanning> CreneauxPlanning => interieur.CreneauxPlanning;
+
         public IRepository<Core.Entites.ReglesConformite> ReglesConformite => interieur.ReglesConformite;
 
         public IRepository<Core.Entites.JournalAudit> JournauxAudit => interieur.JournauxAudit;

@@ -9,6 +9,7 @@
                  mc:Ignorable="d"
                  Title="GestPlan"
                  Icon="/Assets/logo.png"
+                 Language="fr-FR"
                  Height="720" Width="1200"
                  MinHeight="480" MinWidth="720"
                  ExtendsContentIntoTitleBar="True"

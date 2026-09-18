@@ -1,5 +1,8 @@
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Windows;
+using System.Windows.Markup;
 using GestPlan.App.Services;
 using GestPlan.App.ViewModels;
 using GestPlan.App.Views.Pages;
@@ -28,6 +31,15 @@ public partial class App : Application
 
     public App()
     {
+        var cultureFrancaise = CultureInfo.GetCultureInfo("fr-FR");
+        CultureInfo.DefaultThreadCurrentCulture = cultureFrancaise;
+        CultureInfo.DefaultThreadCurrentUICulture = cultureFrancaise;
+        Thread.CurrentThread.CurrentCulture = cultureFrancaise;
+        Thread.CurrentThread.CurrentUICulture = cultureFrancaise;
+        FrameworkElement.LanguageProperty.OverrideMetadata(
+            typeof(FrameworkElement),
+            new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(cultureFrancaise.IetfLanguageTag)));
+
         var logsDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "GestPlan", "logs");
@@ -54,6 +66,7 @@ public partial class App : Application
                 services.AddSingleton<IServiceLocalisation, ServiceLocalisation>();
                 services.AddSingleton<ISelecteurSiteService, SelecteurSiteService>();
                 services.AddSingleton<ISessionUtilisateurService, SessionUtilisateurService>();
+                services.AddSingleton<IServicePileAnnulation, ServicePileAnnulation>();
                 services.AddSingleton<IServicePhotosEmployes, ServicePhotosEmployes>();
 
                 services.AddSingleton<IServiceHachageMotDePasse, ServiceHachageMotDePasse>();

@@ -1,0 +1,32 @@
+<ui:FluentWindow x:Class="GestPlan.App.DupliquerSemaineWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:loc="clr-namespace:GestPlan.App.Services"
+                 mc:Ignorable="d"
+                 Title="{loc:Localisation Cle=Page.Planning.Dupliquer}"
+                 Icon="/Assets/logo.png"
+                 Language="fr-FR"
+                 Height="240" Width="320"
+                 ResizeMode="NoResize"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Title="GestPlan" Grid.Row="0" Icon="{ui:ImageIcon 'pack://application:,,,/Assets/logo.png'}" />
+
+        <StackPanel Grid.Row="1" Margin="24">
+            <ui:TextBlock Text="{loc:Localisation Cle=Page.Planning.NombreSemaines}" Margin="0,0,0,8" />
+            <ui:NumberBox x:Name="SaisieNombreSemaines" Value="1" Minimum="1" Maximum="52" Margin="0,0,0,16" />
+
+            <ui:Button Content="{loc:Localisation Cle=Page.Planning.Dupliquer}" Appearance="Primary"
+                       HorizontalAlignment="Stretch" Click="Dupliquer_Click" />
+        </StackPanel>
+    </Grid>
+</ui:FluentWindow>

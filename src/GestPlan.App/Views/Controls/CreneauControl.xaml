@@ -1,0 +1,60 @@
+<UserControl x:Class="GestPlan.App.Views.Controls.CreneauControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:viewModels="clr-namespace:GestPlan.App.ViewModels"
+             xmlns:loc="clr-namespace:GestPlan.App.Services"
+             d:DataContext="{d:DesignInstance Type=viewModels:CreneauPlanningViewModel}"
+             mc:Ignorable="d"
+             Width="140">
+    <UserControl.Resources>
+        <loc:CouleurHexVersBrushConverter x:Key="CouleurHexVersBrush" />
+    </UserControl.Resources>
+    <Grid>
+        <Border x:Name="CorpsCreneau"
+                Background="{Binding CouleurPoste, Converter={StaticResource CouleurHexVersBrush}}"
+                CornerRadius="4" Padding="6,4" Cursor="SizeAll"
+                MouseLeftButtonDown="Corps_MouseLeftButtonDown"
+                MouseMove="Corps_MouseMove"
+                MouseLeftButtonUp="Corps_MouseLeftButtonUp">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding EnConflit}" Value="True">
+                            <Setter Property="BorderBrush" Value="Red" />
+                            <Setter Property="BorderThickness" Value="2" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Statut}" Value="Annule">
+                            <Setter Property="Opacity" Value="0.4" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Statut}" Value="Brouillon">
+                            <Setter Property="Opacity" Value="0.65" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Statut}" Value="Confirme">
+                            <Setter Property="BorderBrush" Value="White" />
+                            <Setter Property="BorderThickness" Value="1.5" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+            <StackPanel>
+                <ui:TextBlock Text="{Binding NomEmploye}" Foreground="White" FontTypography="Caption" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
+                <ui:TextBlock Text="{Binding NomPoste}" Foreground="White" FontTypography="Caption" TextTrimming="CharacterEllipsis" />
+                <ui:TextBlock Foreground="White" FontTypography="Caption">
+                    <Run Text="{Binding HeureDebut, Mode=OneWay, StringFormat={}{0:HH\\:mm}}" />
+                    <Run Text="-" />
+                    <Run Text="{Binding HeureFin, Mode=OneWay, StringFormat={}{0:HH\\:mm}}" />
+                </ui:TextBlock>
+            </StackPanel>
+        </Border>
+
+        <Thumb x:Name="PoigneeHaut" Height="6" VerticalAlignment="Top" Cursor="SizeNS" Background="Transparent"
+               DragDelta="PoigneeHaut_DragDelta" DragCompleted="Poignee_DragCompleted" />
+
+        <Thumb x:Name="PoigneeBas" Height="6" VerticalAlignment="Bottom" Cursor="SizeNS" Background="Transparent"
+               DragDelta="PoigneeBas_DragDelta" DragCompleted="Poignee_DragCompleted" />
+    </Grid>
+</UserControl>

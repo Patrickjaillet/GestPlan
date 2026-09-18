@@ -10,6 +10,7 @@
                  mc:Ignorable="d"
                  Title="{loc:Localisation Cle=Page.Employes.Import.Titre}"
                  Icon="/Assets/logo.png"
+                 Language="fr-FR"
                  Height="520" Width="640"
                  ExtendsContentIntoTitleBar="True"
                  WindowStartupLocation="CenterScreen">

@@ -10,6 +10,7 @@
                  mc:Ignorable="d"
                  Title="{loc:Localisation Cle=PremierCompte.Titre}"
                  Icon="/Assets/logo.png"
+                 Language="fr-FR"
                  Height="480" Width="400"
                  ResizeMode="NoResize"
                  ExtendsContentIntoTitleBar="True"

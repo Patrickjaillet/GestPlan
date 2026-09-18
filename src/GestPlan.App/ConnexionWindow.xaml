@@ -10,6 +10,7 @@
                  mc:Ignorable="d"
                  Title="{loc:Localisation Cle=Connexion.Titre}"
                  Icon="/Assets/logo.png"
+                 Language="fr-FR"
                  Height="420" Width="380"
                  ResizeMode="NoResize"
                  ExtendsContentIntoTitleBar="True"

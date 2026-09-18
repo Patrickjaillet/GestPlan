@@ -32,6 +32,8 @@ public class GestPlanDbContext(DbContextOptions<GestPlanDbContext> options) : Db
 
     public DbSet<ReglesConformite> ReglesConformite => Set<ReglesConformite>();
 
+    public DbSet<CreneauPlanning> CreneauxPlanning => Set<CreneauPlanning>();
+
     public DbSet<JournalAudit> JournauxAudit => Set<JournalAudit>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -138,6 +140,29 @@ public class GestPlanDbContext(DbContextOptions<GestPlanDbContext> options) : Db
                 .WithMany(e => e.Indisponibilites)
                 .HasForeignKey(i => i.EmployeId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<CreneauPlanning>(entite =>
+        {
+            entite.HasIndex(c => new { c.EmployeId, c.Date });
+
+            entite.HasOne(c => c.Employe)
+                .WithMany(e => e.CreneauxPlanning)
+                .HasForeignKey(c => c.EmployeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entite.HasOne(c => c.Site)
+                .WithMany()
+                .HasForeignKey(c => c.SiteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entite.HasOne(c => c.Poste)
+                .WithMany()
+                .HasForeignKey(c => c.PosteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entite.Ignore(c => c.DebutHorodate);
+            entite.Ignore(c => c.FinHorodate);
         });
 
         modelBuilder.Entity<JournalAudit>(entite =>

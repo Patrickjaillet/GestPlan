@@ -9,8 +9,54 @@
          xmlns:viewModels="clr-namespace:GestPlan.App.ViewModels"
          mc:Ignorable="d"
          Title="{loc:Localisation Cle=Page.Planning.Titre}">
-    <StackPanel Margin="24" VerticalAlignment="Center" HorizontalAlignment="Center">
-        <ui:TextBlock Text="{loc:Localisation Cle=Page.Planning.Titre}" FontTypography="TitleLarge" />
-        <ui:TextBlock Text="{loc:Localisation Cle=Page.Planning.Message}" Margin="0,12,0,0" Opacity="0.7" />
-    </StackPanel>
+    <Page.Resources>
+        <loc:ChaineVersVisibiliteConverter x:Key="ChaineVersVisibilite" />
+    </Page.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TextBlock Grid.Row="0" Text="{loc:Localisation Cle=Page.Planning.Titre}" FontTypography="TitleLarge" Margin="0,0,0,12" />
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
+            <ComboBox SelectedItem="{Binding VueSelectionnee}" Width="140" Margin="0,0,12,0">
+                <ComboBox.ItemsSource>
+                    <x:Array Type="{x:Type viewModels:TypeVuePlanning}">
+                        <viewModels:TypeVuePlanning>Semaine</viewModels:TypeVuePlanning>
+                        <viewModels:TypeVuePlanning>Mois</viewModels:TypeVuePlanning>
+                        <viewModels:TypeVuePlanning>ParEmploye</viewModels:TypeVuePlanning>
+                        <viewModels:TypeVuePlanning>ParPoste</viewModels:TypeVuePlanning>
+                    </x:Array>
+                </ComboBox.ItemsSource>
+            </ComboBox>
+
+            <ui:Button Content="{loc:Localisation Cle=Page.Planning.SemainePrecedente}" Appearance="Secondary" Margin="0,0,4,0"
+                       Command="{Binding SemainePrecedenteCommand}" />
+            <ui:Button Content="{loc:Localisation Cle=Page.Planning.AujourdHui}" Appearance="Secondary" Margin="0,0,4,0"
+                       Command="{Binding AujourdHuiCommand}" />
+            <ui:Button Content="{loc:Localisation Cle=Page.Planning.SemaineSuivante}" Appearance="Secondary" Margin="0,0,20,0"
+                       Command="{Binding SemaineSuivanteCommand}" />
+
+            <ui:Button Content="{loc:Localisation Cle=Page.Planning.Annuler}" Appearance="Secondary" Margin="0,0,4,0"
+                       IsEnabled="{Binding PeutAnnuler}" Command="{Binding AnnulerCommand}" />
+            <ui:Button Content="{loc:Localisation Cle=Page.Planning.Retablir}" Appearance="Secondary" Margin="0,0,20,0"
+                       IsEnabled="{Binding PeutRetablir}" Command="{Binding RetablirCommand}" />
+
+            <ui:Button Content="{loc:Localisation Cle=Page.Planning.Publier}" Appearance="Primary" Margin="0,0,4,0"
+                       Command="{Binding PublierSemaineCommand}" />
+            <ui:Button Content="{loc:Localisation Cle=Page.Planning.Dupliquer}" Appearance="Secondary"
+                       Click="DupliquerSemaine_Click" />
+        </StackPanel>
+
+        <ui:TextBlock Grid.Row="1" HorizontalAlignment="Right" Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                      Text="{Binding MessageErreur}" Visibility="{Binding MessageErreur, Converter={StaticResource ChaineVersVisibilite}}" />
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <StackPanel x:Name="ConteneurSections" />
+        </ScrollViewer>
+    </Grid>
 </Page>
