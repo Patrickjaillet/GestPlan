@@ -9,8 +9,187 @@
          xmlns:viewModels="clr-namespace:GestPlan.App.ViewModels"
          mc:Ignorable="d"
          Title="{loc:Localisation Cle=Page.Conges.Titre}">
-    <StackPanel Margin="24" VerticalAlignment="Center" HorizontalAlignment="Center">
-        <ui:TextBlock Text="{loc:Localisation Cle=Page.Conges.Titre}" FontTypography="TitleLarge" />
-        <ui:TextBlock Text="{loc:Localisation Cle=Page.Conges.Message}" Margin="0,12,0,0" Opacity="0.7" />
-    </StackPanel>
+    <Page.Resources>
+        <loc:ChaineVersVisibiliteConverter x:Key="ChaineVersVisibilite" />
+        <loc:ObjetNonNulVersVisibiliteConverter x:Key="ObjetNonNulVersVisibilite" />
+        <loc:BooleenVersVisibiliteConverter x:Key="BooleenVersVisibilite" />
+    </Page.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TextBlock Grid.Row="0" Text="{loc:Localisation Cle=Page.Conges.Titre}" FontTypography="TitleLarge" Margin="0,0,0,12" />
+
+        <TabControl Grid.Row="1">
+            <TabItem Header="{loc:Localisation Cle=Page.Conges.MesDemandes}">
+                <Grid Margin="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.3*" />
+                        <ColumnDefinition Width="24" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <ComboBox ItemsSource="{Binding Employes}" SelectedItem="{Binding EmployeSelectionne}"
+                                      Width="220" Margin="0,0,12,0">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <Run Text="{Binding Nom, Mode=OneWay}" />
+                                            <Run Text="{Binding Prenom, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <ui:NumberBox Value="{Binding AnneeSelectionnee}" Width="100" />
+                        </StackPanel>
+
+                        <ui:Card Margin="0,0,0,16">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Margin="0,0,24,0">
+                                    <ui:TextBlock Text="{loc:Localisation Cle=Page.Conges.SoldeJoursAcquis}" Opacity="0.7" FontTypography="Caption" />
+                                    <ui:TextBlock Text="{Binding SoldeAffiche.JoursAcquis, Mode=OneWay}" FontTypography="BodyStrong" />
+                                </StackPanel>
+                                <StackPanel Margin="0,0,24,0">
+                                    <ui:TextBlock Text="{loc:Localisation Cle=Page.Conges.SoldeJoursPris}" Opacity="0.7" FontTypography="Caption" />
+                                    <ui:TextBlock Text="{Binding SoldeAffiche.JoursPris, Mode=OneWay}" FontTypography="BodyStrong" />
+                                </StackPanel>
+                                <StackPanel>
+                                    <ui:TextBlock Text="{loc:Localisation Cle=Page.Conges.SoldeJoursRestants}" Opacity="0.7" FontTypography="Caption" />
+                                    <ui:TextBlock Text="{Binding SoldeAffiche.JoursRestants, Mode=OneWay}" FontTypography="BodyStrong" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ui:Card>
+
+                        <ui:Button Content="{loc:Localisation Cle=Page.Conges.ExporterPdf}" Appearance="Secondary"
+                                   HorizontalAlignment="Left" Margin="0,0,0,16" Click="ExporterPdf_Click" />
+
+                        <ListView ItemsSource="{Binding Absences}" MaxHeight="380">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" Padding="8">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0">
+                                                <ui:TextBlock Text="{Binding NomTypeAbsence}" FontTypography="BodyStrong" />
+                                                <ui:TextBlock Opacity="0.7" FontTypography="Caption">
+                                                    <Run Text="{Binding DateDebut, Mode=OneWay, StringFormat={}{0:dd/MM/yyyy}}" />
+                                                    <Run Text=" → " />
+                                                    <Run Text="{Binding DateFin, Mode=OneWay, StringFormat={}{0:dd/MM/yyyy}}" />
+                                                    <Run Text=" — " />
+                                                    <Run Text="{Binding Statut, Mode=OneWay}" />
+                                                </ui:TextBlock>
+                                            </StackPanel>
+
+                                            <ui:Button Grid.Column="1" Content="{loc:Localisation Cle=Page.Conges.Valider}"
+                                                       Appearance="Primary" Margin="4,0"
+                                                       Visibility="{Binding DataContext.GestionTypesAutorisee, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource BooleenVersVisibilite}}"
+                                                       Command="{Binding DataContext.ValiderAbsenceCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                       CommandParameter="{Binding}" />
+
+                                            <ui:Button Grid.Column="2" Content="{loc:Localisation Cle=Page.Conges.Refuser}"
+                                                       Appearance="Danger" Margin="4,0"
+                                                       Visibility="{Binding DataContext.GestionTypesAutorisee, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource BooleenVersVisibilite}}"
+                                                       Command="{Binding DataContext.RefuserAbsenceCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                       CommandParameter="{Binding}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <ui:TextBlock Text="{loc:Localisation Cle=Page.Conges.NouvelleDemande}" FontTypography="BodyStrong" Margin="0,0,0,12" />
+
+                        <ComboBox ItemsSource="{Binding TypesAbsence}" SelectedItem="{Binding TypeAbsenceSelectionne}"
+                                  Margin="0,0,0,8" />
+
+                        <DatePicker SelectedDate="{Binding NouvelleDateDebut}" Margin="0,0,0,8" />
+                        <DatePicker SelectedDate="{Binding NouvelleDateFin}" Margin="0,0,0,8" />
+
+                        <ui:TextBox Text="{Binding NouveauMotif, UpdateSourceTrigger=PropertyChanged}"
+                                    PlaceholderText="{loc:Localisation Cle=Page.Conges.Motif}" Margin="0,0,0,12" />
+
+                        <ui:TextBlock Text="{Binding MessageErreur}"
+                                      Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                                      TextWrapping="Wrap" Margin="0,0,0,12"
+                                      Visibility="{Binding MessageErreur, Converter={StaticResource ChaineVersVisibilite}}" />
+
+                        <ui:Button Content="{loc:Localisation Cle=Page.Conges.Demander}" Appearance="Primary"
+                                   HorizontalAlignment="Stretch" Command="{Binding DemanderAbsenceCommand}" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="{loc:Localisation Cle=Page.Conges.Calendrier}">
+                <ListView Margin="16" ItemsSource="{Binding AbsencesCalendrier}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Employé" DisplayMemberBinding="{Binding NomEmploye}" Width="180" />
+                            <GridViewColumn Header="Type" DisplayMemberBinding="{Binding NomTypeAbsence}" Width="140" />
+                            <GridViewColumn Header="Début" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DateDebut, StringFormat={}{0:dd/MM/yyyy}}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Fin" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DateFin, StringFormat={}{0:dd/MM/yyyy}}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+
+            <TabItem Header="{loc:Localisation Cle=Page.Conges.TypesAbsence}"
+                     Visibility="{Binding GestionTypesAutorisee, Converter={StaticResource BooleenVersVisibilite}}">
+                <Grid Margin="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <ListView Grid.Row="0" ItemsSource="{Binding TypesAbsence}" MaxHeight="300">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <ui:TextBlock Grid.Column="0" Text="{Binding Nom}" VerticalAlignment="Center" />
+                                    <CheckBox Grid.Column="1" IsChecked="{Binding DecompteDuSolde, Mode=OneWay}" IsEnabled="False"
+                                              Content="{loc:Localisation Cle=Page.Conges.DecompteDuSolde}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,12,0,0">
+                        <ui:TextBox Text="{Binding NouveauType.Nom, UpdateSourceTrigger=PropertyChanged}"
+                                    PlaceholderText="{loc:Localisation Cle=Page.Conges.NomType}" Width="220" Margin="0,0,12,0" />
+                        <CheckBox IsChecked="{Binding NouveauType.DecompteDuSolde}"
+                                  Content="{loc:Localisation Cle=Page.Conges.DecompteDuSolde}" VerticalAlignment="Center" Margin="0,0,12,0" />
+                        <ui:Button Content="{loc:Localisation Cle=Page.Conges.AjouterType}" Appearance="Primary"
+                                   Command="{Binding AjouterTypeAbsenceCommand}" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </Page>

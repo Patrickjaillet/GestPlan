@@ -24,6 +24,12 @@ public interface IUnitOfWork : IDisposable
 
     IRepository<CreneauPlanning> CreneauxPlanning { get; }
 
+    IRepository<TypeAbsence> TypesAbsence { get; }
+
+    IRepository<Absence> Absences { get; }
+
+    IRepository<ReglesAcquisitionConges> ReglesAcquisitionConges { get; }
+
     IRepository<ReglesConformite> ReglesConformite { get; }
 
     IRepository<JournalAudit> JournauxAudit { get; }

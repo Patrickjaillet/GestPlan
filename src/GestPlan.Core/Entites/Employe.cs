@@ -41,4 +41,6 @@ public class Employe : EntiteBase
     public ICollection<Indisponibilite> Indisponibilites { get; set; } = new List<Indisponibilite>();
 
     public ICollection<CreneauPlanning> CreneauxPlanning { get; set; } = new List<CreneauPlanning>();
+
+    public ICollection<Absence> Absences { get; set; } = new List<Absence>();
 }

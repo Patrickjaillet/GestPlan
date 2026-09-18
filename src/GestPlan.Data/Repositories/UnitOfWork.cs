@@ -20,6 +20,9 @@ public class UnitOfWork : IUnitOfWork
         EmployesPostes = new Repository<EmployePoste>(contexte);
         Indisponibilites = new Repository<Indisponibilite>(contexte);
         CreneauxPlanning = new Repository<CreneauPlanning>(contexte);
+        TypesAbsence = new Repository<TypeAbsence>(contexte);
+        Absences = new Repository<Absence>(contexte);
+        ReglesAcquisitionConges = new Repository<ReglesAcquisitionConges>(contexte);
         ReglesConformite = new Repository<ReglesConformite>(contexte);
         JournauxAudit = new Repository<JournalAudit>(contexte);
     }
@@ -39,6 +42,12 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<Indisponibilite> Indisponibilites { get; }
 
     public IRepository<CreneauPlanning> CreneauxPlanning { get; }
+
+    public IRepository<TypeAbsence> TypesAbsence { get; }
+
+    public IRepository<Absence> Absences { get; }
+
+    public IRepository<ReglesAcquisitionConges> ReglesAcquisitionConges { get; }
 
     public IRepository<ReglesConformite> ReglesConformite { get; }
 

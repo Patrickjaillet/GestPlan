@@ -34,6 +34,12 @@ public class GestPlanDbContext(DbContextOptions<GestPlanDbContext> options) : Db
 
     public DbSet<CreneauPlanning> CreneauxPlanning => Set<CreneauPlanning>();
 
+    public DbSet<TypeAbsence> TypesAbsence => Set<TypeAbsence>();
+
+    public DbSet<Absence> Absences => Set<Absence>();
+
+    public DbSet<ReglesAcquisitionConges> ReglesAcquisitionConges => Set<ReglesAcquisitionConges>();
+
     public DbSet<JournalAudit> JournauxAudit => Set<JournalAudit>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -163,6 +169,49 @@ public class GestPlanDbContext(DbContextOptions<GestPlanDbContext> options) : Db
 
             entite.Ignore(c => c.DebutHorodate);
             entite.Ignore(c => c.FinHorodate);
+        });
+
+        modelBuilder.Entity<TypeAbsence>(entite =>
+        {
+            entite.HasIndex(t => t.Nom).IsUnique();
+        });
+
+        modelBuilder.Entity<Absence>(entite =>
+        {
+            entite.HasIndex(a => new { a.EmployeId, a.DateDebut, a.DateFin });
+
+            entite.HasOne(a => a.Employe)
+                .WithMany(e => e.Absences)
+                .HasForeignKey(a => a.EmployeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entite.HasOne(a => a.Site)
+                .WithMany()
+                .HasForeignKey(a => a.SiteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entite.HasOne(a => a.TypeAbsence)
+                .WithMany()
+                .HasForeignKey(a => a.TypeAbsenceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entite.HasOne(a => a.ValideParUtilisateur)
+                .WithMany()
+                .HasForeignKey(a => a.ValideParUtilisateurId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entite.Ignore(a => a.NombreJours);
+        });
+
+        modelBuilder.Entity<ReglesAcquisitionConges>(entite =>
+        {
+            entite.HasIndex(r => r.SiteId).IsUnique();
+            entite.Property(r => r.JoursAcquisParMois).HasPrecision(5, 2);
+
+            entite.HasOne(r => r.Site)
+                .WithOne()
+                .HasForeignKey<ReglesAcquisitionConges>(r => r.SiteId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<JournalAudit>(entite =>

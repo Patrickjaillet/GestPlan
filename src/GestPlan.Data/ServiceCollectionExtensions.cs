@@ -1,7 +1,9 @@
+using GestPlan.Data.Export;
 using GestPlan.Data.Import;
 using GestPlan.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using QuestPDF.Infrastructure;
 
 namespace GestPlan.Data;
 
@@ -13,6 +15,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AjouterGestPlanData(this IServiceCollection services)
     {
+        QuestPDF.Settings.License = LicenseType.Community;
+
         services.AddDbContext<GestPlanDbContext>(options =>
             options.UseSqlite(CheminsBaseDeDonnees.ChaineConnexion));
 
@@ -20,6 +24,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>();
         services.AddScoped<InitialiseurBaseDeDonnees>();
         services.AddSingleton<IServiceImportEmployes, ServiceImportEmployes>();
+        services.AddSingleton<IServiceExportSoldeConges, ServiceExportSoldeConges>();
 
         return services;
     }

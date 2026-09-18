@@ -30,6 +30,12 @@ public class UnitOfWorkFactory(IServiceScopeFactory scopeFactory) : IUnitOfWorkF
 
         public IRepository<Core.Entites.CreneauPlanning> CreneauxPlanning => interieur.CreneauxPlanning;
 
+        public IRepository<Core.Entites.TypeAbsence> TypesAbsence => interieur.TypesAbsence;
+
+        public IRepository<Core.Entites.Absence> Absences => interieur.Absences;
+
+        public IRepository<Core.Entites.ReglesAcquisitionConges> ReglesAcquisitionConges => interieur.ReglesAcquisitionConges;
+
         public IRepository<Core.Entites.ReglesConformite> ReglesConformite => interieur.ReglesConformite;
 
         public IRepository<Core.Entites.JournalAudit> JournauxAudit => interieur.JournauxAudit;

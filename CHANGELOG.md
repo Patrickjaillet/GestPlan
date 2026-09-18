@@ -28,6 +28,7 @@ et ce projet adhère au [Versionnage Sémantique](https://semver.org/lang/fr/) (
 - Recherche et filtres avancés sur la liste des employés (nom/prénom, site, poste, statut).
 - Planning visuel : grille interactive (vues semaine, mois, par employé, par poste) avec création de créneaux par glisser-déposer et redimensionnement par poignées, duplication de semaine, statuts de créneau (brouillon, planifié, confirmé, annulé), code couleur par poste, détection automatique des conflits (double affectation, indisponibilité), verrouillage des créneaux passés, vue consolidée multi-site, annulation/rétablissement des modifications en session, mode brouillon/publié.
 - Localisation forcée en français (formats d'heure et de date) sur l'ensemble de l'interface.
+- Congés et absences : types d'absence paramétrables, demande et workflow de validation (validé/refusé avec traçabilité), calcul et affichage du solde de congés par employé et par année, acquisition automatique des droits selon des règles paramétrables par site, blocage et alerte en cas de chevauchement avec le planning, vue calendrier consolidée des absences validées, export PDF du solde de congés.
 
 ## [0.1.0] - 2026-09-17
 
