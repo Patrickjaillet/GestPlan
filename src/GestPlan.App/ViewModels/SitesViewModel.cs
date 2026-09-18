@@ -28,6 +28,12 @@ public partial class SitesViewModel : PageViewModelBase
     [ObservableProperty]
     private PosteEditableViewModel _posteEnCoursEdition = new();
 
+    [ObservableProperty]
+    private SiteEditableViewModel? _siteSelectionnePourConformite;
+
+    [ObservableProperty]
+    private ReglesConformiteEditableViewModel _reglesConformiteEnCoursEdition = new();
+
     public ObservableCollection<SiteEditableViewModel> Sites { get; } = [];
 
     public ObservableCollection<PosteEditableViewModel> PostesDuSite { get; } = [];
@@ -187,5 +193,44 @@ public partial class SitesViewModel : PageViewModelBase
         }
 
         await ChargerPostesAsync(SiteSelectionnePourPostes.Id);
+    }
+
+    [RelayCommand]
+    private async Task SelectionnerSitePourConformiteAsync(SiteEditableViewModel site)
+    {
+        SiteSelectionnePourConformite = site;
+
+        using var unitOfWork = _unitOfWorkFactory.Creer();
+        var regles = await unitOfWork.ReglesConformite.ObtenirUnAsync(r => r.SiteId == site.Id);
+
+        ReglesConformiteEnCoursEdition = regles is not null
+            ? new ReglesConformiteEditableViewModel(regles)
+            : new ReglesConformiteEditableViewModel();
+    }
+
+    [RelayCommand]
+    private async Task EnregistrerReglesConformiteAsync()
+    {
+        if (SiteSelectionnePourConformite is null)
+        {
+            return;
+        }
+
+        using var unitOfWork = _unitOfWorkFactory.Creer();
+
+        var regles = await unitOfWork.ReglesConformite.ObtenirUnAsync(r => r.SiteId == SiteSelectionnePourConformite.Id);
+        if (regles is not null)
+        {
+            ReglesConformiteEnCoursEdition.AppliquerA(regles);
+            unitOfWork.ReglesConformite.Modifier(regles);
+        }
+        else
+        {
+            var nouvellesRegles = new ReglesConformite { SiteId = SiteSelectionnePourConformite.Id };
+            ReglesConformiteEnCoursEdition.AppliquerA(nouvellesRegles);
+            await unitOfWork.ReglesConformite.AjouterAsync(nouvellesRegles);
+        }
+
+        await unitOfWork.EnregistrerAsync();
     }
 }

@@ -11,6 +11,7 @@
              Width="140">
     <UserControl.Resources>
         <loc:CouleurHexVersBrushConverter x:Key="CouleurHexVersBrush" />
+        <loc:BooleenVersVisibiliteConverter x:Key="BooleenVersVisibilite" />
     </UserControl.Resources>
     <Grid>
         <Border x:Name="CorpsCreneau"
@@ -24,6 +25,10 @@
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding EnConflit}" Value="True">
                             <Setter Property="BorderBrush" Value="Red" />
+                            <Setter Property="BorderThickness" Value="2" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding EnAnomalieConformite}" Value="True">
+                            <Setter Property="BorderBrush" Value="Orange" />
                             <Setter Property="BorderThickness" Value="2" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Statut}" Value="Annule">
@@ -41,7 +46,16 @@
             </Border.Style>
 
             <StackPanel>
-                <ui:TextBlock Text="{Binding NomEmploye}" Foreground="White" FontTypography="Caption" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ui:TextBlock Grid.Column="0" Text="{Binding NomEmploye}" Foreground="White" FontTypography="Caption" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
+                    <ui:SymbolIcon Grid.Column="1" Symbol="Warning24" Foreground="Orange"
+                                    Visibility="{Binding EnAnomalieConformite, Converter={StaticResource BooleenVersVisibilite}}"
+                                    ToolTip="{Binding MessageAnomaliesConformite}" />
+                </Grid>
                 <ui:TextBlock Text="{Binding NomPoste}" Foreground="White" FontTypography="Caption" TextTrimming="CharacterEllipsis" />
                 <ui:TextBlock Foreground="White" FontTypography="Caption">
                     <Run Text="{Binding HeureDebut, Mode=OneWay, StringFormat={}{0:HH\\:mm}}" />

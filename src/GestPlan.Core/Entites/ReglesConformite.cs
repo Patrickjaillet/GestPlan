@@ -23,4 +23,10 @@ public class ReglesConformite : EntiteBase
     public TimeSpan DureePauseObligatoire { get; set; } = TimeSpan.FromMinutes(20);
 
     public int JoursConsecutifsMaximum { get; set; } = 6;
+
+    /// <summary>
+    /// Si vrai, la publication d'un planning contenant au moins une anomalie de conformité
+    /// non résolue est bloquée pour ce site (voir <c>PlanningViewModel.PublierSemaineAsync</c>).
+    /// </summary>
+    public bool BloquerPublicationSiNonConforme { get; set; }
 }

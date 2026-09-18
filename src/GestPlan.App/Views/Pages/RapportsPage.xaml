@@ -9,8 +9,69 @@
          xmlns:viewModels="clr-namespace:GestPlan.App.ViewModels"
          mc:Ignorable="d"
          Title="{loc:Localisation Cle=Page.Rapports.Titre}">
-    <StackPanel Margin="24" VerticalAlignment="Center" HorizontalAlignment="Center">
-        <ui:TextBlock Text="{loc:Localisation Cle=Page.Rapports.Titre}" FontTypography="TitleLarge" />
-        <ui:TextBlock Text="{loc:Localisation Cle=Page.Rapports.Message}" Margin="0,12,0,0" Opacity="0.7" />
-    </StackPanel>
+    <Page.Resources>
+        <loc:ChaineVersVisibiliteConverter x:Key="ChaineVersVisibilite" />
+    </Page.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TextBlock Grid.Row="0" Text="{loc:Localisation Cle=Page.Rapports.TitreConformite}" FontTypography="TitleLarge" Margin="0,0,0,12" />
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,16">
+            <ComboBox ItemsSource="{Binding Sites}" SelectedItem="{Binding SiteSelectionne}"
+                      DisplayMemberPath="Nom" Width="200" Margin="0,0,12,0" />
+
+            <DatePicker SelectedDate="{Binding DebutPeriode}" Width="140" Margin="0,0,8,0" />
+            <ui:TextBlock Text="→" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <DatePicker SelectedDate="{Binding FinPeriode}" Width="140" Margin="0,0,16,0" />
+
+            <ui:Button Content="{loc:Localisation Cle=Page.Rapports.Actualiser}" Appearance="Secondary"
+                       Margin="0,0,12,0" Command="{Binding GenererRapportCommand}" />
+
+            <ui:Button Content="{loc:Localisation Cle=Page.Rapports.ExporterPdf}" Appearance="Primary"
+                       Click="ExporterPdf_Click" />
+        </StackPanel>
+
+        <ui:TextBlock Grid.Row="1" Text="{Binding MessageErreur}"
+                      Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                      TextWrapping="Wrap" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                      Visibility="{Binding MessageErreur, Converter={StaticResource ChaineVersVisibilite}}" />
+
+        <Grid Grid.Row="2">
+            <ui:TextBlock Text="{loc:Localisation Cle=Page.Rapports.AucuneAnomalie}" Opacity="0.7"
+                          HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0">
+                <ui:TextBlock.Style>
+                    <Style TargetType="ui:TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Anomalies.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:TextBlock.Style>
+            </ui:TextBlock>
+
+            <ListView ItemsSource="{Binding Anomalies}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="{loc:Localisation Cle=Page.Rapports.Employe}" DisplayMemberBinding="{Binding NomEmploye}" Width="220" />
+                        <GridViewColumn Header="{loc:Localisation Cle=Page.Rapports.Date}" Width="120">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Date, StringFormat={}{0:dd/MM/yyyy}}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="{loc:Localisation Cle=Page.Rapports.Anomalie}" DisplayMemberBinding="{Binding Libelle}" Width="380" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Grid>
 </Page>

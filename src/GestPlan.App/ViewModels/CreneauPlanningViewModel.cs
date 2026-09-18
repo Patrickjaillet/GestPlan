@@ -46,6 +46,12 @@ public partial class CreneauPlanningViewModel : ObservableObject
     [ObservableProperty]
     private bool _enConflit;
 
+    [ObservableProperty]
+    private bool _enAnomalieConformite;
+
+    [ObservableProperty]
+    private string? _messageAnomaliesConformite;
+
     public static CreneauPlanningViewModel DepuisEntite(CreneauPlanning creneau, string nomEmploye, string nomSite, string nomPoste, string? couleurPoste) => new()
     {
         Id = creneau.Id,

@@ -74,11 +74,78 @@
                                            Appearance="Secondary" Margin="4,0"
                                            Command="{Binding DataContext.SelectionnerSitePourPostesCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                            CommandParameter="{Binding}" />
+
+                                <ui:Button Grid.Column="5"
+                                           Content="{loc:Localisation Cle=Page.Sites.GererConformite}"
+                                           Appearance="Secondary" Margin="4,0"
+                                           Command="{Binding DataContext.SelectionnerSitePourConformiteCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding}" />
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+
+            <StackPanel Visibility="{Binding SiteSelectionnePourConformite, Converter={StaticResource ObjetNonNulVersVisibilite}}"
+                        Margin="0,20,0,0">
+                <ui:TextBlock FontTypography="BodyStrong" Margin="0,0,0,12">
+                    <Run Text="{loc:Localisation Cle=Page.Sites.ReglesConformite}" />
+                    <Run Text=" — " />
+                    <Run Text="{Binding SiteSelectionnePourConformite.Nom, Mode=OneWay}" />
+                </ui:TextBlock>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,8">
+                        <ui:TextBlock Text="{loc:Localisation Cle=Page.Sites.ReposQuotidienMinimum}" Opacity="0.7" FontTypography="Caption" />
+                        <ui:NumberBox Value="{Binding ReglesConformiteEnCoursEdition.ReposQuotidienMinimumHeures}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,8">
+                        <ui:TextBlock Text="{loc:Localisation Cle=Page.Sites.ReposHebdomadaireMinimum}" Opacity="0.7" FontTypography="Caption" />
+                        <ui:NumberBox Value="{Binding ReglesConformiteEnCoursEdition.ReposHebdomadaireMinimumHeures}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,8">
+                        <ui:TextBlock Text="{loc:Localisation Cle=Page.Sites.DureeMaximaleQuotidienne}" Opacity="0.7" FontTypography="Caption" />
+                        <ui:NumberBox Value="{Binding ReglesConformiteEnCoursEdition.DureeMaximaleQuotidienneHeures}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,8">
+                        <ui:TextBlock Text="{loc:Localisation Cle=Page.Sites.DureeMaximaleHebdomadaire}" Opacity="0.7" FontTypography="Caption" />
+                        <ui:NumberBox Value="{Binding ReglesConformiteEnCoursEdition.DureeMaximaleHebdomadaireHeures}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,0,8">
+                        <ui:TextBlock Text="{loc:Localisation Cle=Page.Sites.DureeTravailContinuAvantPause}" Opacity="0.7" FontTypography="Caption" />
+                        <ui:NumberBox Value="{Binding ReglesConformiteEnCoursEdition.DureeTravailContinuAvantPauseHeures}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,0,0,8">
+                        <ui:TextBlock Text="{loc:Localisation Cle=Page.Sites.DureePauseObligatoire}" Opacity="0.7" FontTypography="Caption" />
+                        <ui:NumberBox Value="{Binding ReglesConformiteEnCoursEdition.DureePauseObligatoireMinutes}" />
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Margin="0,0,0,12">
+                    <ui:TextBlock Text="{loc:Localisation Cle=Page.Sites.JoursConsecutifsMaximum}" Opacity="0.7" FontTypography="Caption" />
+                    <ui:NumberBox Value="{Binding ReglesConformiteEnCoursEdition.JoursConsecutifsMaximum}" />
+                </StackPanel>
+
+                <CheckBox Content="{loc:Localisation Cle=Page.Sites.BloquerPublicationSiNonConforme}"
+                          IsChecked="{Binding ReglesConformiteEnCoursEdition.BloquerPublicationSiNonConforme}" Margin="0,0,0,12" />
+
+                <ui:Button Content="{loc:Localisation Cle=Page.Sites.EnregistrerConformite}"
+                           Appearance="Primary" HorizontalAlignment="Stretch"
+                           Command="{Binding EnregistrerReglesConformiteCommand}" />
+            </StackPanel>
         </StackPanel>
 
         <StackPanel Grid.Column="2">

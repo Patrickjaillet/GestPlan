@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<InitialiseurBaseDeDonnees>();
         services.AddSingleton<IServiceImportEmployes, ServiceImportEmployes>();
         services.AddSingleton<IServiceExportSoldeConges, ServiceExportSoldeConges>();
+        services.AddSingleton<IServiceExportRapportConformite, ServiceExportRapportConformite>();
 
         return services;
     }

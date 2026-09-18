@@ -17,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -52,10 +53,10 @@
                        Click="DupliquerSemaine_Click" />
         </StackPanel>
 
-        <ui:TextBlock Grid.Row="1" HorizontalAlignment="Right" Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+        <ui:TextBlock Grid.Row="2" Foreground="{DynamicResource SystemFillColorCriticalBrush}" TextWrapping="Wrap" Margin="0,0,0,12"
                       Text="{Binding MessageErreur}" Visibility="{Binding MessageErreur, Converter={StaticResource ChaineVersVisibilite}}" />
 
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <StackPanel x:Name="ConteneurSections" />
         </ScrollViewer>
     </Grid>

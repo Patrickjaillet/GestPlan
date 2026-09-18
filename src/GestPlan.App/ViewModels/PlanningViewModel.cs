@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GestPlan.App.Services;
+using GestPlan.Core.Conformite;
 using GestPlan.Core.Entites;
 using GestPlan.Core.Enumerations;
 using GestPlan.Core.Planning;
@@ -133,6 +134,8 @@ public partial class PlanningViewModel : PageViewModelBase
 
         var tousLesCreneaux = await unitOfWork.CreneauxPlanning.ObtenirTousAsync();
         var indisponibilites = await unitOfWork.Indisponibilites.ObtenirTousAsync();
+        var toutesLesReglesConformite = await unitOfWork.ReglesConformite.ObtenirTousAsync();
+        var reglesConformiteParSite = toutesLesReglesConformite.ToDictionary(r => r.SiteId, r => r);
 
         var premierJour = JoursAffiches.Count > 0 ? JoursAffiches[0] : DateReference;
         var dernierJour = JoursAffiches.Count > 0 ? JoursAffiches[^1] : DateReference;
@@ -148,6 +151,31 @@ public partial class PlanningViewModel : PageViewModelBase
         var tousLesSites = await unitOfWork.Sites.ObtenirTousAsync();
         var sitesParId = tousLesSites.ToDictionary(s => s.Id, s => s.Nom);
 
+        var anomaliesParCreneauId = new Dictionary<int, List<AnomalieConformite>>();
+        foreach (var groupeEmploye in tousLesCreneaux.GroupBy(c => c.EmployeId))
+        {
+            var siteEmploye = groupeEmploye.Select(c => c.SiteId).FirstOrDefault();
+            if (!reglesConformiteParSite.TryGetValue(siteEmploye, out var regles))
+            {
+                continue;
+            }
+
+            foreach (var anomalie in MoteurConformite.Evaluer(groupeEmploye.Key, groupeEmploye, regles))
+            {
+                if (anomalie.Creneau is null)
+                {
+                    continue;
+                }
+
+                if (!anomaliesParCreneauId.TryGetValue(anomalie.Creneau.Id, out var liste))
+                {
+                    liste = [];
+                    anomaliesParCreneauId[anomalie.Creneau.Id] = liste;
+                }
+                liste.Add(anomalie);
+            }
+        }
+
         Creneaux.Clear();
         var aujourdHui = DateOnly.FromDateTime(DateTime.Today);
 
@@ -162,6 +190,12 @@ public partial class PlanningViewModel : PageViewModelBase
 
             var autresCreneaux = tousLesCreneaux.Where(c => c.Id != creneau.Id);
             vm.EnConflit = DetecteurConflitsPlanning.Detecter(creneau, autresCreneaux, indisponibilites).Count > 0;
+
+            if (anomaliesParCreneauId.TryGetValue(creneau.Id, out var anomalies))
+            {
+                vm.EnAnomalieConformite = true;
+                vm.MessageAnomaliesConformite = string.Join(Environment.NewLine, anomalies.Select(a => LibellesAnomalieConformite.Obtenir(a.Type)).Distinct());
+            }
 
             Creneaux.Add(vm);
         }
@@ -377,13 +411,36 @@ public partial class PlanningViewModel : PageViewModelBase
     [RelayCommand]
     private async Task PublierSemaineAsync()
     {
+        MessageErreur = null;
+
         using var unitOfWork = _unitOfWorkFactory.Creer();
 
         var tousLesCreneaux = await unitOfWork.CreneauxPlanning.ObtenirTousAsync();
         var premierJour = JoursAffiches.Count > 0 ? JoursAffiches[0] : DateReference;
         var dernierJour = JoursAffiches.Count > 0 ? JoursAffiches[^1] : DateReference;
 
-        foreach (var creneau in tousLesCreneaux.Where(c => c.Date >= premierJour && c.Date <= dernierJour))
+        var creneauxAPublier = tousLesCreneaux.Where(c => c.Date >= premierJour && c.Date <= dernierJour).ToList();
+
+        var toutesLesReglesConformite = await unitOfWork.ReglesConformite.ObtenirTousAsync();
+        var reglesConformiteParSite = toutesLesReglesConformite.ToDictionary(r => r.SiteId, r => r);
+
+        foreach (var groupeEmploye in creneauxAPublier.GroupBy(c => c.EmployeId))
+        {
+            var siteEmploye = groupeEmploye.Select(c => c.SiteId).FirstOrDefault();
+            if (!reglesConformiteParSite.TryGetValue(siteEmploye, out var regles) || !regles.BloquerPublicationSiNonConforme)
+            {
+                continue;
+            }
+
+            var creneauxCompletEmploye = tousLesCreneaux.Where(c => c.EmployeId == groupeEmploye.Key);
+            if (MoteurConformite.Evaluer(groupeEmploye.Key, creneauxCompletEmploye, regles).Count > 0)
+            {
+                MessageErreur = "La publication a été bloquée : au moins une anomalie de conformité n'est pas résolue sur cette période. Corrigez les créneaux signalés ou désactivez le blocage dans les règles de conformité du site.";
+                return;
+            }
+        }
+
+        foreach (var creneau in creneauxAPublier)
         {
             creneau.EstPublie = true;
             if (creneau.Statut == StatutCreneau.Brouillon)
